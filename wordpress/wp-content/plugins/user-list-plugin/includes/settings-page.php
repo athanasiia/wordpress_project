@@ -45,7 +45,7 @@ function ulp_render_settings_page() : void
                 <tr>
                     <th scope="row">GoREST Token:</th>
                     <td>
-                        <input type="text" name="ulp_gorest_token" class="regular-text"/>
+                        <input type="password" name="ulp_gorest_token" class="regular-text" value="<?php echo get_option('ulp_gorest_token'); ?>"/>
                     </td>
                 </tr>
             </table>
