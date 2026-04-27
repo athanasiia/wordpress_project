@@ -51,6 +51,7 @@ function ulp_handle_edit(int $id) : array
     $user['email'] = $email;
     $user['gender'] = $gender;
     $user['status'] = $status;
+    $user['updated'] = date("Y-m-d");
 
     $validation_result = ulp_user_form_validation($user);
 

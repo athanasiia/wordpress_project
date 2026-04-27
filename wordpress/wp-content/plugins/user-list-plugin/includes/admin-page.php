@@ -182,6 +182,10 @@ function ulp_render_admin_page() : void
                     <?php endif; ?>
                     <th>Gender</th>
                     <th>Status</th>
+                    <?php if($source === 'local'): ?>
+                        <th>Created</th>
+                        <th>Updated</th>
+                    <?php endif; ?>
                 </tr>
                 </thead>
                 <tbody>
@@ -204,6 +208,10 @@ function ulp_render_admin_page() : void
                         <?php endif; ?>
                         <td><?php echo $user['gender']; ?></td>
                         <td><?php echo $user['status']; ?></td>
+                        <?php if($source === 'local'): ?>
+                            <td><?php echo isset($user['created']) ? esc_html($user['created']) : ''; ?></td>
+                            <td><?php echo isset($user['updated']) ? esc_html($user['updated']) : ''; ?></td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
