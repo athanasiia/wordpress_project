@@ -18,11 +18,17 @@ function ulp_render_settings_page() : void
     if (isset($_POST['ulp_save_settings']) && check_admin_referer('ulp_settings_nonce')) {
         $source = sanitize_text_field($_POST['ulp_data_source']);
         $token = sanitize_text_field($_POST['ulp_gorest_token']);
+        $days = sanitize_text_field($_POST['ulp_update_days']);
 
-        update_option('ulp_data_source', $source);
-        update_option('ulp_gorest_token', $token);
+        if (!is_numeric($days)) {
+            echo '<div class="notice notice-error"> Incorrect number of days </div>';
+        } else {
+            update_option('ulp_data_source', $source);
+            update_option('ulp_gorest_token', $token);
+            update_option('ulp_update_days', $days);
 
-        echo '<div class="notice notice-success"> Saved </div>';
+            echo '<div class="notice notice-success"> Saved </div>';
+        }
     }
 
     $current_source = get_option('ulp_data_source', 'local');
@@ -46,6 +52,12 @@ function ulp_render_settings_page() : void
                     <th scope="row">GoREST Token:</th>
                     <td>
                         <input type="password" name="ulp_gorest_token" class="regular-text" value="<?php echo get_option('ulp_gorest_token'); ?>"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Days since last user update:</th>
+                    <td>
+                        <input type="text" name="ulp_update_days" class="regular-text" value="<?php echo get_option('ulp_update_days'); ?>"/>
                     </td>
                 </tr>
             </table>
