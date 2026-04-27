@@ -1,76 +1,27 @@
-:root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
-
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
-
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-    font-weight: 500;
-    color: #646cff;
-}
-
-a:hover {
-    color: #535bf2;
-}
+/*
+ Theme Name: twentytwentyfive Child
+ Template: twentytwentyfive
+ Description: A child theme for twentytwentyfive
+ Version: 1.0
+*/
 
 body {
-    margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
-}
-
-div {
-    margin: 0 auto;
-}
-
-h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
-}
-
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-button {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
-    font-weight: 500;
-    font-family: inherit;
-    background-color: #1a1a1a;
-    cursor: pointer;
-    transition: border-color 0.25s;
-}
-button:hover {
-    border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
+    background-color: white;
 }
 
 
-
-
-
-
+/*user table*/
 .ulp-users-container {
-    padding: 20px;
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 400;
+    background-color: rgba(255, 255, 255, 0.87);
+    color: #242424;
+    padding: 40px;
+    margin: auto;
+    width: fit-content;
+    max-width: none;
 }
 
 .ulp-action-panel {
@@ -122,11 +73,6 @@ button:focus-visible {
     gap: 8px;
 }
 
-.ulp-filter-group label {
-    font-weight: 500;
-    color: #555;
-}
-
 .ulp-filter-select {
     padding: 8px 12px;
     border: 1px solid #ddd;
@@ -145,6 +91,7 @@ button:focus-visible {
     padding: 6px 12px;
     border: 1px solid #ddd;
     background: white;
+    color: #242424;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
@@ -188,18 +135,27 @@ button:focus-visible {
     align-items: center;
 }
 
-.ulp-table-pages a {
+.ulp-users-container  a {
     text-decoration: none;
 }
 
+.ulp-users-container a:focus,
+.ulp-users-container a:hover {
+    outline: 4px auto -webkit-focus-ring-color;
+}
 
 
+/*user form*/
 .ulp-user-form {
+    font-size: 1.1rem;
     background-color: #eee;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 10px;
     padding: 60px;
+    margin: 40px auto;
+    max-width: 300px;
     border-radius: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
@@ -208,10 +164,12 @@ button:focus-visible {
     width: 100%;
 }
 
-.ulp-user-form > div > input, .ulp-user-form > div > select {
+.ulp-user-form > div > input,
+.ulp-user-form > div > select {
     background-color: white;
     width: 100%;
-    padding: 5px;
+    margin: 5px;
+    padding: 8px;
     border: none;
     border-radius: 5px;
     font: inherit;
@@ -221,10 +179,18 @@ button:focus-visible {
     background-color: #9873e1;
     color: white;
     margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    width: fit-content;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.25s;
 }
 
 
-
+/*modals*/
 .ulp-modal-overlay {
     position: fixed;
     top: 0;
@@ -250,6 +216,10 @@ button:focus-visible {
     text-align: center;
 }
 
+.ulp-modal-message {
+    font-size: 16px;
+}
+
 .ulp-modal-actions {
     display: flex;
     justify-content: flex-end;
@@ -269,3 +239,4 @@ button:focus-visible {
     width: 100%;
     max-width: 250px;
 }
+

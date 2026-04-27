@@ -28,5 +28,5 @@ function ulp_activate_plugin(): void
     ulp_create_table();
 }
 
-wp_enqueue_style('user-list-plugin', plugin_dir_url(__FILE__) . 'assets/css/user-table.css');
+wp_enqueue_style('user-list-plugin', plugin_dir_url(__FILE__) . '../../themes/twentytwentyfive-child/style.css');
 wp_enqueue_script('user-list-plugin', plugin_dir_url(__FILE__) . 'assets/js/user-table.js');

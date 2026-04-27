@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="ulp-modal">
                         <div class="ulp-modal-content">
                             <h3>Confirm Selection</h3>
-                            <p>${message}</p>
+                            <p class="ulp-modal-message">${message}</p>
                             <div class="ulp-modal-actions">
                                 <button class="ulp-modal-button" id="modalCancelBtn">Cancel</button>
                                 <button class="ulp-modal-button" id="modalConfirmBtn">Delete</button>

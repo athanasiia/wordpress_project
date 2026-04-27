@@ -93,7 +93,6 @@ function ulp_render_admin_page() : void
         $users = ulp_get_gorest_users($filters);
     }
 
-//    $base_url = get_permalink();
     $base_url = admin_url('admin.php?page=ulp-users');
     $current_url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     ?>
@@ -109,7 +108,7 @@ function ulp_render_admin_page() : void
                 </button>
                 <div>
                     <label>Check all</label>
-                    <input type="checkbox" class="ulp-user-checkbox" id="selectAllCheckbox" />
+                    <input type="checkbox"  id="selectAllCheckbox" />
                 </div>
             </div>
         </div>
@@ -215,7 +214,7 @@ function ulp_render_admin_page() : void
                     <a href="<?php echo add_query_arg('user_page', $page_number - 1, $current_url); ?>" class="ulp-table-button">&#10094;</a>
                 <?php endif; ?>
 
-                <p><?php echo $page_number; ?></p>
+                <span><?php echo $page_number; ?></span>
 
                 <?php if(count($users) === $items_per_page): ?>
                     <a href="<?php echo add_query_arg('user_page', $page_number + 1, $current_url); ?>" class="ulp-table-button">&#10095;</a>

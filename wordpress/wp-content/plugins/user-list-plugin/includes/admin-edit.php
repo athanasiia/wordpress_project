@@ -91,7 +91,6 @@ function ulp_render_edit_page() : void
 
     if ($source === 'local') {
         $user = ulp_get_local_user($id);
-        var_dump($user);
     } else {
         $user = ulp_get_gorest_user($id);
     }
