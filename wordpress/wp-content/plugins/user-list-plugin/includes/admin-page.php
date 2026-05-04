@@ -89,6 +89,7 @@ function ulp_render_admin_page() : void
 
     if ($source == 'local') {
         $users = ulp_get_local_users($filters);
+        $inactive_users = get_option('ulp_inactive_users_list');
     } else {
         $users = ulp_get_gorest_users($filters);
     }
@@ -96,6 +97,8 @@ function ulp_render_admin_page() : void
     $base_url = admin_url('admin.php?page=ulp-users');
     $current_url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     ?>
+
+    <?php if (isset($inactive_users) && $inactive_users) echo ulp_render_inactive_users_block($inactive_users); ?>
 
     <div class="ulp-users-container">
         <div class="ulp-action-panel">
