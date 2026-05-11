@@ -210,7 +210,7 @@ function ulp_render_admin_page() : void
                             <td><?php echo isset($user['country']) ? esc_html($user['country']) : ''; ?></td>
                         <?php endif; ?>
                         <td><?php echo $user['gender']; ?></td>
-                        <td><?php echo $user['status']; ?></td>
+                        <td><?php echo apply_filters('ulp_add_icons', $user['status']); ?></td>
                         <?php if($source === 'local'): ?>
                             <td><?php echo isset($user['created']) ? esc_html($user['created']) : ''; ?></td>
                             <td><?php echo isset($user['updated']) ? esc_html($user['updated']) : ''; ?></td>

@@ -8,3 +8,10 @@ function my_child_theme_enqueue_styles(): void
 }
 
 add_action('wp_enqueue_scripts', 'my_child_theme_enqueue_styles');
+
+add_filter('ulp_add_icons', 'ulp_add_icons');
+
+function ulp_add_icons(string $status): string
+{
+    return $status === 'active' ? "$status &#10687" : "$status &#10686";
+}
