@@ -95,6 +95,10 @@ function ulp_render_admin_page() : void
     }
 
     $base_url = admin_url('admin.php?page=ulp-users');
+    // ISSUE [HIGH-01]: $_SERVER['HTTP_HOST'] can be spoofed via the HTTP Host header on
+    // misconfigured servers. The hardcoded 'http://' scheme also breaks HTTPS sites.
+    // The constructed URL is later echoed as an href, creating an open-redirect / cache-
+    // poisoning risk. Use home_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) instead.
     $current_url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     ?>
 
@@ -148,6 +152,9 @@ function ulp_render_admin_page() : void
 
             <div class="ulp-sort-buttons">
                 <span>Sort by:</span>
+                <?php // ISSUE [MED-10]: add_query_arg() output must always be wrapped in esc_url()
+                // before being echoed into an href. Without it, a crafted query string value
+                // (e.g. containing 'javascript:') can inject a script-protocol URL. ?>
                 <a href="<?php echo add_query_arg(array('sort_field' => 'name', 'sort_order' => $sort_field === 'name' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1), $base_url); ?>" class="ulp-sort-button">
                     Name <?php echo $sort_field === 'name' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
                 </a>
@@ -195,13 +202,18 @@ function ulp_render_admin_page() : void
                 <?php foreach($users as $user): ?>
                     <tr>
                         <td>
+                            <?php // ISSUE [CRITICAL-02]: data-id attribute echoed without esc_attr().
+                            // A stored XSS payload in the id field would break out of the attribute. ?>
                             <button class="ulp-table-button" data-id="<?php echo $user['id']; ?>">
                                 Edit
                             </button>
                         </td>
                         <td>
+                            <?php // ISSUE [CRITICAL-02]: Same as above — data-id needs esc_attr(). ?>
                             <input type="checkbox" class="ulp-user-checkbox" data-id="<?php echo $user['id']; ?>" />
                         </td>
+                        <?php // ISSUE [CRITICAL-02]: User ID echoed without any escaping.
+                        // Always cast to int or wrap in esc_html() before output. ?>
                         <td><?php echo $user['id']; ?></td>
                         <td><?php echo esc_html($user['email']); ?></td>
                         <td><?php echo esc_html($user['name']); ?></td>
@@ -209,7 +221,12 @@ function ulp_render_admin_page() : void
                             <td><?php echo isset($user['city']) ? esc_html($user['city']) : ''; ?></td>
                             <td><?php echo isset($user['country']) ? esc_html($user['country']) : ''; ?></td>
                         <?php endif; ?>
+                        <?php // ISSUE [CRITICAL-02]: $user['gender'] echoed without escaping.
+                        // If the value comes from the API it is untrusted data. ?>
                         <td><?php echo $user['gender']; ?></td>
+                        <?php // ISSUE [CRITICAL-02]: The return value of apply_filters() is echoed raw.
+                        // Any filter callback that returns unescaped HTML containing user data
+                        // creates a stored XSS vector. Wrap with wp_kses_post() at minimum. ?>
                         <td><?php echo apply_filters('ulp_add_icons', $user['status']); ?></td>
                         <?php if($source === 'local'): ?>
                             <td><?php echo isset($user['created']) ? esc_html($user['created']) : ''; ?></td>
@@ -222,12 +239,18 @@ function ulp_render_admin_page() : void
 
             <div class="ulp-table-pages">
                 <?php if($page_number > 1): ?>
+                    <?php // ISSUE [MED-10]: add_query_arg() not wrapped in esc_url(). ?>
+                    <?php // ISSUE [HIGH-01]: $current_url is built from the spoofable HTTP_HOST. ?>
                     <a href="<?php echo add_query_arg('user_page', $page_number - 1, $current_url); ?>" class="ulp-table-button">&#10094;</a>
                 <?php endif; ?>
 
+                <?php // ISSUE [CRITICAL-02]: $page_number is echoed without escaping.
+                // intval() was applied earlier so the actual risk is low, but the pattern
+                // is inconsistent and should use esc_html() for clarity. ?>
                 <span><?php echo $page_number; ?></span>
 
                 <?php if(count($users) === $items_per_page): ?>
+                    <?php // ISSUE [MED-10]: Same — add_query_arg() must be escaped with esc_url(). ?>
                     <a href="<?php echo add_query_arg('user_page', $page_number + 1, $current_url); ?>" class="ulp-table-button">&#10095;</a>
                 <?php endif; ?>
             </div>

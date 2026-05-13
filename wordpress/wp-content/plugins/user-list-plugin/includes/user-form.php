@@ -3,6 +3,9 @@
  * @package UserListPlugin
  */
 
+// ISSUE [MED-02 / general]: This file is missing the ABSPATH guard present in all
+// other includes. Add: if ( ! defined( 'ABSPATH' ) ) { exit; }
+
 function ulp_render_user_form(string $source, string $title, string $errors = '', array $form_data = []) : string
 {
     $email = isset($form_data['email']) ? esc_attr($form_data['email']) : '';
@@ -86,6 +89,12 @@ function ulp_render_user_form(string $source, string $title, string $errors = ''
 function ulp_user_form_validation(array $data) : string
 {
     foreach($data as $field => $value) {
+        // ISSUE [CRITICAL-03]: empty($field) checks the array KEY (e.g. the string 'name'),
+        // not the VALUE. A non-empty string key is never empty, so this condition is ALWAYS
+        // false. Required-field validation never triggers. Empty name, city, gender, and
+        // status all pass through silently into the database.
+        // Fix: check empty($value) and validate $value against allowed enums for
+        // gender ('male','female') and status ('active','inactive').
         if (empty($field)) {
             return 'Please fill in' . $field . ' field';
         }

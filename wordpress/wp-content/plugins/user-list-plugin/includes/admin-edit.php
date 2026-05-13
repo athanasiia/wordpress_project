@@ -43,6 +43,9 @@ function ulp_handle_edit(int $id) : array
         $country = sanitize_text_field($_POST['country']);
         $city = sanitize_text_field($_POST['city']);
 
+        // ISSUE [MED-14]: Same undefined-variable pattern as admin-create.php.
+        // $user is only created here if $source === 'local'; otherwise it is undefined
+        // when assigned below. Initialise $user = [] before this block.
         $user['country'] = $country;
         $user['city'] = $city;
     }
@@ -51,6 +54,9 @@ function ulp_handle_edit(int $id) : array
     $user['email'] = $email;
     $user['gender'] = $gender;
     $user['status'] = $status;
+    // ISSUE [MED-03]: date() uses the PHP server's timezone, which may differ from the
+    // WordPress site timezone configured in Settings > General.
+    // Use wp_date('Y-m-d') or current_time('Y-m-d') to respect the WP timezone setting.
     $user['updated'] = date("Y-m-d");
 
     $validation_result = ulp_user_form_validation($user);
@@ -83,6 +89,9 @@ function ulp_render_edit_page() : void
     $source = get_option('ulp_data_source', 'local');
     $id = intval($_GET['id']);
 
+    // ISSUE [HIGH-04]: The error message is printed but execution is NOT stopped.
+    // The code falls through and calls ulp_handle_edit(0) and ulp_get_local_user(0),
+    // which may query or mutate an unintended row.
     if (empty($id)) {
         echo '<div>No user ID provided</div>';
     }
