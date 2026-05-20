@@ -43,9 +43,7 @@ function ulp_render_user_list_shortcode($atts): false | string
     }
 
     $base_url = get_permalink();
-    // ISSUE [HIGH-01]: Same HTTP_HOST spoofing and hardcoded http:// scheme problem as
-    // admin-page.php. Use home_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) instead.
-    $current_url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $current_url = home_url(wp_unslash( $_SERVER['REQUEST_URI']));
 
     ob_start();
     ?>
@@ -53,8 +51,7 @@ function ulp_render_user_list_shortcode($atts): false | string
     <div class="ulp-users-container">
         <div class="ulp-filters-panel">
             <div class="ulp-search-box">
-                <?php // ISSUE [CRITICAL-02]: $base_url echoed without esc_url(). ?>
-                <form method="get" action="<?php echo $base_url; ?>">
+                <form method="get" action="<?php echo esc_url($base_url); ?>">
                     <input type="text" placeholder="Search by name..." name="search" value="<?php echo esc_attr($search_term); ?>" class="ulp-search-input" />
                     <?php foreach($_GET as $key => $value): ?>
                         <?php if($key !== 'search' && $key !== 'user_page'): ?>
@@ -84,21 +81,19 @@ function ulp_render_user_list_shortcode($atts): false | string
 
             <div class="ulp-sort-buttons">
                 <span>Sort by:</span>
-                <?php // ISSUE [MED-10]: All three sort hrefs use add_query_arg() without esc_url(). ?>
-                <a href="<?php echo add_query_arg(array('sort_field' => 'name', 'sort_order' => $sort_field === 'name' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1), $base_url); ?>" class="ulp-sort-button">
+                <a href="<?php echo esc_url(add_query_arg(array('sort_field' => 'name', 'sort_order' => $sort_field === 'name' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1), $base_url)); ?>" class="ulp-sort-button">
                     Name <?php echo $sort_field === 'name' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
                 </a>
-                <a href="<?php echo add_query_arg(array('sort_field' => 'email', 'sort_order' => $sort_field === 'email' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1), $base_url); ?>" class="ulp-sort-button">
+                <a href="<?php echo esc_url(add_query_arg(array('sort_field' => 'email', 'sort_order' => $sort_field === 'email' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1), $base_url)); ?>" class="ulp-sort-button">
                     Email <?php echo $sort_field === 'email' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
                 </a>
-                <a href="<?php echo add_query_arg(array('sort_field' => 'id', 'sort_order' => $sort_field === 'id' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1), $base_url); ?>" class="ulp-sort-button">
+                <a href="<?php echo esc_url(add_query_arg(array('sort_field' => 'id', 'sort_order' => $sort_field === 'id' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1), $base_url)); ?>" class="ulp-sort-button">
                     ID <?php echo $sort_field === 'id' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
                 </a>
             </div>
         </div>
 
-        <?php // ISSUE [CRITICAL-02]: $base_url echoed again without esc_url(). ?>
-        <form id="filterForm" method="get" action="<?php echo $base_url; ?>">
+        <form id="filterForm" method="get" action="<?php echo esc_url($base_url); ?>">
             <?php foreach($_GET as $key => $value): ?>
                 <?php if($key !== 'filter_status' && $key !== 'filter_gender' && $key !== 'user_page'): ?>
                     <input type="hidden" name="<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($value); ?>" />
@@ -126,18 +121,15 @@ function ulp_render_user_list_shortcode($atts): false | string
                 <tbody>
                 <?php foreach($users as $user): ?>
                     <tr>
-                        <?php // ISSUE [CRITICAL-02]: id, gender, and status all echoed without
-                        // escaping. This shortcode runs on the public frontend where XSS is
-                        // reachable by unauthenticated visitors. ?>
-                        <td><?php echo $user['id']; ?></td>
+                        <td><?php echo esc_html($user['id']); ?></td>
                         <td><?php echo esc_html($user['email']); ?></td>
                         <td><?php echo esc_html($user['name']); ?></td>
                         <?php if($source === 'local'): ?>
                             <td><?php echo isset($user['city']) ? esc_html($user['city']) : ''; ?></td>
                             <td><?php echo isset($user['country']) ? esc_html($user['country']) : ''; ?></td>
                         <?php endif; ?>
-                        <td><?php echo $user['gender']; ?></td>
-                        <td><?php echo $user['status']; ?></td>
+                        <td><?php echo esc_html($user['gender']); ?></td>
+                        <td><?php echo esc_html($user['status']); ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -145,17 +137,13 @@ function ulp_render_user_list_shortcode($atts): false | string
 
             <div class="ulp-table-pages">
                 <?php if($page_number > 1): ?>
-                    <?php // ISSUE [MED-10]: add_query_arg() not wrapped in esc_url(). ?>
-                    <?php // ISSUE [HIGH-01]: $current_url built from spoofable HTTP_HOST. ?>
-                    <a href="<?php echo add_query_arg('user_page', $page_number - 1, $current_url); ?>" class="ulp-table-button">&#10094;</a>
+                    <a href="<?php echo esc_url(add_query_arg('user_page', $page_number - 1, $current_url)); ?>" class="ulp-table-button">&#10094;</a>
                 <?php endif; ?>
 
-                <?php // ISSUE [CRITICAL-02]: $page_number echoed without escaping. ?>
-                <p><?php echo $page_number; ?></p>
+                <p><?php echo esc_html($page_number); ?></p>
 
                 <?php if(count($users) === $items_per_page): ?>
-                    <?php // ISSUE [MED-10]: Same — add_query_arg() must be wrapped in esc_url(). ?>
-                    <a href="<?php echo add_query_arg('user_page', $page_number + 1, $current_url); ?>" class="ulp-table-button">&#10095;</a>
+                    <a href="<?php echo esc_url(add_query_arg('user_page', $page_number + 1, $current_url)); ?>" class="ulp-table-button">&#10095;</a>
                 <?php endif; ?>
             </div>
         </div>

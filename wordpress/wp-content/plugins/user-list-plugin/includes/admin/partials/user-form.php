@@ -3,8 +3,9 @@
  * @package UserListPlugin
  */
 
-// ISSUE [MED-02 / general]: This file is missing the ABSPATH guard present in all
-// other includes. Add: if ( ! defined( 'ABSPATH' ) ) { exit; }
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 function ulp_render_user_form(string $source, string $title, string $errors = '', array $form_data = []) : string
 {
@@ -86,22 +87,30 @@ function ulp_render_user_form(string $source, string $title, string $errors = ''
     return ob_get_clean();
 }
 
-function ulp_user_form_validation(array $data) : string
+function ulp_user_form_validation(array $data, string $source) : string
 {
-    foreach($data as $field => $value) {
-        // ISSUE [CRITICAL-03]: empty($field) checks the array KEY (e.g. the string 'name'),
-        // not the VALUE. A non-empty string key is never empty, so this condition is ALWAYS
-        // false. Required-field validation never triggers. Empty name, city, gender, and
-        // status all pass through silently into the database.
-        // Fix: check empty($value) and validate $value against allowed enums for
-        // gender ('male','female') and status ('active','inactive').
-        if (empty($field)) {
-            return 'Please fill in' . $field . ' field';
+    if ($source === 'local') {
+        $required_fields = ['name', 'email', 'country', 'city', 'gender', 'status'];
+    } else {
+        $required_fields = ['name', 'email', 'gender', 'status'];
+    }
+
+    foreach ($required_fields as $field) {
+        if (empty(trim($data[$field] ?? ''))) {
+            return sprintf('Please fill in the %s field', $field);
         }
     }
 
     if (!is_email($data['email'])) {
         return 'Please enter a valid email address';
+    }
+
+    if (!in_array($data['gender'], ['male', 'female'], true)) {
+        return 'Gender must be either "male" or "female"';
+    }
+
+    if (!in_array($data['status'], ['active', 'inactive'], true)) {
+        return 'Status must be either "active" or "inactive"';
     }
 
     return '';

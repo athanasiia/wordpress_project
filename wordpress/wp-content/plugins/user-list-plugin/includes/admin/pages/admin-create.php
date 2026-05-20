@@ -39,14 +39,12 @@ function ulp_handle_create() : array
     $gender = sanitize_text_field($_POST['gender']);
     $status = sanitize_text_field($_POST['status']);
 
+    $user = [];
+
     if ($source === 'local') {
         $country = sanitize_text_field($_POST['country']);
         $city = sanitize_text_field($_POST['city']);
 
-        // ISSUE [MED-14]: $user is first created here, inside the local-only branch.
-        // If $source is not 'local', $user is undefined when the lines below run.
-        // PHP will implicitly create the array but emit a notice in strict mode.
-        // Initialise $user = [] unconditionally before this block.
         $user['country'] = $country;
         $user['city'] = $city;
     }
@@ -56,7 +54,7 @@ function ulp_handle_create() : array
     $user['gender'] = $gender;
     $user['status'] = $status;
 
-    $validation_result = ulp_user_form_validation($user);
+    $validation_result = ulp_user_form_validation($user, $source);
 
     if (!empty($validation_result)) {
         return ['success' => false, 'error' => $validation_result];

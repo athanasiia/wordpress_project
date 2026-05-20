@@ -274,10 +274,7 @@ function ulp_render_countries_select(string $selected = '') : string
 
     foreach ($countries as $code => $country) {
         $selected_attr = ($selected === $code) ? ' selected="selected"' : '';
-        // ISSUE [MED-12]: $code and $country are concatenated into HTML without esc_attr()
-        // or esc_html(). The data is currently a static array so the immediate risk is low,
-        // but the function is public and could be filtered.
-        $html .= '<option value="'.$code.'"'.$selected_attr.'>'.$country.'</option>';
+        $html .= '<option value="' . esc_attr($code) . '"' . $selected_attr . '>' . esc_attr($country) . '</option>';
     }
 
     $html .= '</select>';

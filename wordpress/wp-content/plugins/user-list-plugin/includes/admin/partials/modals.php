@@ -11,12 +11,8 @@ function ulp_render_result_modal(array $result) : string
     <div class="ulp-modal-overlay" id="resultModal">
         <div class="ulp-modal">
             <div class="ulp-modal-content">
-                <?php // ISSUE [CRITICAL-02]: Both the title and the message/error string are
-                // echoed without any escaping. These values originate partly from API
-                // responses and user-submitted data, so a stored XSS payload in $result['error']
-                // or $result['message'] would execute here. Wrap with esc_html(). ?>
                 <h3><?php echo $result['success'] ? 'Success!' :  'Error'; ?></h3>
-                <p class="ulp-modal-message"><?php echo $result['success'] ? $result['message'] : $result['error']; ?></p>
+                <p class="ulp-modal-message"><?php echo $result['success'] ? esc_html($result['message']) : esc_html($result['error']); ?></p>
 
                 <button class="ulp-modal-button" onclick="document.getElementById('resultModal').style.display='none'"> Close </button>
             </div>

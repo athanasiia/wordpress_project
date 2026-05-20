@@ -1,0 +1,63 @@
+.ulp-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ulp-modal {
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.ulp-modal-content {
+    padding: 30px;
+    text-align: center;
+}
+
+.ulp-modal-message {
+    font-size: 16px;
+}
+
+.ulp-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.ulp-modal-button {
+    background-color: var(--ulp-brand);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    max-width: 250px;
+}
+
+.ulp-modal-button:focus-visible {
+    outline: 3px solid var(--ulp-brand);
+    outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+    .ulp-modal-actions {
+        flex-direction: column;
+    }
+
+    .ulp-modal-button {
+        max-width: none;
+    }
+}
