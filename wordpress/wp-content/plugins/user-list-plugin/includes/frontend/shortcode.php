@@ -56,7 +56,7 @@ function ulp_render_user_list_shortcode($atts): false | string
         <div class="ulp-filters-panel">
             <div class="ulp-search-box">
                 <form method="get" action="<?php echo esc_url($base_url); ?>">
-                    <input type="text" placeholder="Search by name..." name="search" value="<?php echo esc_attr($search_term); ?>" class="ulp-search-input" />
+                    <input type="text" placeholder="<?php esc_attr_e('Search by name...', 'user-list-plugin'); ?>" name="search" value="<?php echo esc_attr($search_term); ?>" class="ulp-search-input" />
                     <?php foreach($_GET as $key => $value): ?>
                         <?php if($key !== 'search' && $key !== 'user_page'): ?>
                             <input type="hidden" name="<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($value); ?>" />
@@ -66,25 +66,25 @@ function ulp_render_user_list_shortcode($atts): false | string
             </div>
 
             <div class="ulp-filter-group">
-                <label>Status:</label>
+                <label><?php esc_html_e('Status:', 'user-list-plugin'); ?></label>
                 <select class="ulp-filter-select" onchange="this.form.submit()" form="filterForm">
-                    <option value="all" <?php echo $filter_status === 'all' ? 'selected' : ''; ?>>All</option>
-                    <option value="active" <?php echo $filter_status === 'active' ? 'selected' : ''; ?>>Active</option>
-                    <option value="inactive" <?php echo $filter_status === 'inactive' ? 'selected' : ''; ?>>Inactive</option>
+                    <option value="all" <?php echo $filter_status === 'all' ? 'selected' : ''; ?>><?php esc_html_e('All', 'user-list-plugin'); ?></option>
+                    <option value="active" <?php echo $filter_status === 'active' ? 'selected' : ''; ?>><?php esc_html_e('Active', 'user-list-plugin'); ?></option>
+                    <option value="inactive" <?php echo $filter_status === 'inactive' ? 'selected' : ''; ?>><?php esc_html_e('Inactive', 'user-list-plugin'); ?></option>
                 </select>
             </div>
 
             <div class="ulp-filter-group">
-                <label>Gender:</label>
+                <label><?php esc_html_e('Gender:', 'user-list-plugin'); ?></label>
                 <select class="ulp-filter-select" onchange="this.form.submit()" form="filterForm">
-                    <option value="all" <?php echo $filter_gender === 'all' ? 'selected' : ''; ?>>All</option>
-                    <option value="male" <?php echo $filter_gender === 'male' ? 'selected' : ''; ?>>Male</option>
-                    <option value="female" <?php echo $filter_gender === 'female' ? 'selected' : ''; ?>>Female</option>
+                    <option value="all" <?php echo $filter_gender === 'all' ? 'selected' : ''; ?>><?php esc_html_e('All', 'user-list-plugin'); ?></option>
+                    <option value="male" <?php echo $filter_gender === 'male' ? 'selected' : ''; ?>><?php esc_html_e('Male', 'user-list-plugin'); ?></option>
+                    <option value="female" <?php echo $filter_gender === 'female' ? 'selected' : ''; ?>><?php esc_html_e('Female', 'user-list-plugin'); ?></option>
                 </select>
             </div>
 
             <div class="ulp-sort-buttons">
-                <span>Sort by:</span>
+                <span><?php esc_html_e('Sort by:', 'user-list-plugin'); ?></span>
                 <?php // PSR-12: Lines below are 230+ chars — hard limit is 120. Extract $url vars before the template. ?>
                 <a href="<?php echo esc_url(add_query_arg(array('sort_field' => 'name', 'sort_order' => $sort_field === 'name' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1), $base_url)); ?>" class="ulp-sort-button">
                     Name <?php echo $sort_field === 'name' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
@@ -112,15 +112,15 @@ function ulp_render_user_list_shortcode($atts): false | string
             <table class="ulp-users-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>Name</th>
+                    <th><?php esc_html_e('ID', 'user-list-plugin'); ?></th>
+                    <th><?php esc_html_e('Email', 'user-list-plugin'); ?></th>
+                    <th><?php esc_html_e('Name', 'user-list-plugin'); ?></th>
                     <?php if($source === 'local'): ?>
-                        <th>City</th>
-                        <th>Country</th>
+                        <th><?php esc_html_e('City', 'user-list-plugin'); ?></th>
+                        <th><?php esc_html_e('Country', 'user-list-plugin'); ?></th>
                     <?php endif; ?>
-                    <th>Gender</th>
-                    <th>Status</th>
+                    <th><?php esc_html_e('Gender', 'user-list-plugin'); ?></th>
+                    <th><?php esc_html_e('Status', 'user-list-plugin'); ?></th>
                 </tr>
                 </thead>
                 <tbody>

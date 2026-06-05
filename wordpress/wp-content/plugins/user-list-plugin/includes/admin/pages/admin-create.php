@@ -19,8 +19,8 @@ function ulp_add_create_submenu() : void
 {
     add_submenu_page(
         'ulp-users',
-        'Create User',
-        'Create User',
+        __('Create User', 'user-list-plugin'),
+        __('Create User', 'user-list-plugin'),
         'manage_options',
         'ulp-user-create',
         'ulp_render_create_page'
@@ -34,7 +34,7 @@ function ulp_handle_create() : array
     }
 
     if(!check_admin_referer('ulp_create_nonce')) {
-        return ['success' => false, 'error' => 'Invalid WP Token'];
+        return ['success' => false, 'error' => __('Invalid WP Token', 'user-list-plugin')];
     }
 
     $source = get_option('ulp_data_source', 'local');
@@ -75,19 +75,19 @@ function ulp_handle_create() : array
         $result = ulp_create_local_user($user);
 
         if ($result) {
-            return ['success' => true, 'message' => 'Database user created'];
+            return ['success' => true, 'message' => __('Database user created', 'user-list-plugin')];
         }
 
-        return ['success' => false, 'error' => 'Error creating database user'];
+        return ['success' => false, 'error' => __('Error creating database user', 'user-list-plugin')];
     }
 
     $result = ulp_create_gorest_user($user);
 
     if (is_wp_error($result)) {
-        return ['success' => false, 'error' => 'Error creating GoREST user'];
+        return ['success' => false, 'error' => __('Error creating GoREST user', 'user-list-plugin')];
     }
 
-    return ['success' => true, 'message' => 'GoREST user created'];
+    return ['success' => true, 'message' => __('GoREST user created', 'user-list-plugin')];
 }
 
 function ulp_render_create_page() : void
@@ -100,8 +100,8 @@ function ulp_render_create_page() : void
     <div class="wrap">
         <form method="post" class="ulp-user-form">
             <?php wp_nonce_field('ulp_create_nonce'); ?>
-            <?php echo ulp_render_user_form($source, 'Create User', $error); ?>
-            <button class="ulp-submit-button" type="submit" name="ulp_create_submit"> Submit </button>
+            <?php echo ulp_render_user_form($source, __('Create User', 'user-list-plugin'), $error); ?>
+            <button class="ulp-submit-button" type="submit" name="ulp_create_submit"><?php esc_html_e('Submit', 'user-list-plugin'); ?></button>
         </form>
     </div>
 

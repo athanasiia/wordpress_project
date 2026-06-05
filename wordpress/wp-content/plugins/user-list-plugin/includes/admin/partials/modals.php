@@ -18,10 +18,10 @@ function ulp_render_result_modal(array $result) : string
     <div class="ulp-modal-overlay" id="resultModal">
         <div class="ulp-modal">
             <div class="ulp-modal-content">
-                <h3><?php echo $result['success'] ? 'Success!' :  'Error'; ?></h3>
+                <h3><?php echo $result['success'] ? esc_html__('Success!', 'user-list-plugin') : esc_html__('Error', 'user-list-plugin'); ?></h3>
                 <p class="ulp-modal-message"><?php echo $result['success'] ? esc_html($result['message']) : esc_html($result['error']); ?></p>
 
-                <button class="ulp-modal-button" onclick="document.getElementById('resultModal').style.display='none'"> Close </button>
+                <button class="ulp-modal-button" onclick="document.getElementById('resultModal').style.display='none'"><?php esc_html_e('Close', 'user-list-plugin'); ?></button>
             </div>
         </div>
     </div>

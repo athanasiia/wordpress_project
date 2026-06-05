@@ -45,7 +45,7 @@ function ulp_gorest_request(string $method, string $endpoint = '', array $data =
     $response_data = json_decode(wp_remote_retrieve_body($response), true);
 
     if ($response_code < 200 || $response_code >= 300) {
-        $error_message = $response_data['message'] ?? 'Unknown API error';
+        $error_message = $response_data['message'] ?? __('Unknown API error', 'user-list-plugin');
         return new WP_Error('api_error', $error_message, ['status' => $response_code]);
     }
 
@@ -91,7 +91,7 @@ function ulp_get_gorest_user(int $id) : array
 function ulp_create_gorest_user(array $data) : int | false | WP_Error
 {
     if (empty(get_option('ulp_gorest_token'))) {
-        return new WP_Error('no_token', 'Missing API token');
+        return new WP_Error('no_token', __('Missing API token', 'user-list-plugin'));
     }
 
     $response = ulp_gorest_request('POST', '', $data);
@@ -106,7 +106,7 @@ function ulp_create_gorest_user(array $data) : int | false | WP_Error
 function ulp_update_gorest_user(int $id, array $data) : int | false | WP_Error
 {
     if (empty(get_option('ulp_gorest_token'))) {
-        return new WP_Error('no_token', 'Missing API token');
+        return new WP_Error('no_token', __('Missing API token', 'user-list-plugin'));
     }
 
     $response = ulp_gorest_request('PUT', '/' . $id, $data);
@@ -120,7 +120,7 @@ function ulp_update_gorest_user(int $id, array $data) : int | false | WP_Error
 function ulp_delete_gorest_users(array $ids) : int | false | WP_Error
 {
     if (empty(get_option('ulp_gorest_token'))) {
-        return new WP_Error('no_token', 'Missing API token');
+        return new WP_Error('no_token', __('Missing API token', 'user-list-plugin'));
     }
 
     $deleted_users = 0;

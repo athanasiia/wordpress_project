@@ -29,60 +29,60 @@ function ulp_render_user_form(string $source, string $title, string $errors = ''
     <?php endif; ?>
 
     <div>
-        <label>Email</label>
+        <label><?php esc_html_e('Email', 'user-list-plugin'); ?></label>
         <input
                 type="email"
                 name="email"
                 value="<?php echo $email; ?>"
-                placeholder="example@mail.com"
+                placeholder="<?php esc_attr_e('example@mail.com', 'user-list-plugin'); ?>"
                 required
         />
     </div>
 
     <div>
-        <label>Your first and last name</label>
+        <label><?php esc_html_e('Your first and last name', 'user-list-plugin'); ?></label>
         <input
                 type="text"
                 name="name"
                 value="<?php echo $name; ?>"
-                placeholder="John Doe"
+                placeholder="<?php esc_attr_e('John Doe', 'user-list-plugin'); ?>"
                 required
         />
     </div>
 
     <?php if ($source === 'local'): ?>
     <div>
-        <label>Country of residence</label>
+        <label><?php esc_html_e('Country of residence', 'user-list-plugin'); ?></label>
         <?php echo ulp_render_countries_select($country); ?>
     </div>
 
     <div>
-        <label>City</label>
+        <label><?php esc_html_e('City', 'user-list-plugin'); ?></label>
         <input
                 type="text"
                 name="city"
                 value="<?php echo $city; ?>"
-                placeholder="New York"
+                placeholder="<?php esc_attr_e('New York', 'user-list-plugin'); ?>"
                 required
         />
     </div>
     <?php endif; ?>
 
     <div>
-        <label>Gender</label>
+        <label><?php esc_html_e('Gender', 'user-list-plugin'); ?></label>
         <select name="gender" required>
-            <option value="">Select gender</option>
-            <option value="male" <?php echo $gender === 'male' ? 'selected' : ''; ?>>Male</option>
-            <option value="female" <?php echo $gender === 'female' ? 'selected' : ''; ?>>Female</option>
+            <option value=""><?php esc_html_e('Select gender', 'user-list-plugin'); ?></option>
+            <option value="male" <?php echo $gender === 'male' ? 'selected' : ''; ?>><?php esc_html_e('Male', 'user-list-plugin'); ?></option>
+            <option value="female" <?php echo $gender === 'female' ? 'selected' : ''; ?>><?php esc_html_e('Female', 'user-list-plugin'); ?></option>
         </select>
     </div>
 
     <div>
-        <label>Status</label>
+        <label><?php esc_html_e('Status', 'user-list-plugin'); ?></label>
         <select name="status" required>
-            <option value="">Select status</option>
-            <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>>Active user</option>
-            <option value="inactive" <?php echo $status === 'inactive' ? 'selected' : ''; ?>>Inactive user</option>
+            <option value=""><?php esc_html_e('Select status', 'user-list-plugin'); ?></option>
+            <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>><?php esc_html_e('Active user', 'user-list-plugin'); ?></option>
+            <option value="inactive" <?php echo $status === 'inactive' ? 'selected' : ''; ?>><?php esc_html_e('Inactive user', 'user-list-plugin'); ?></option>
         </select>
     </div>
 
@@ -100,20 +100,20 @@ function ulp_user_form_validation(array $data, string $source) : string
 
     foreach ($required_fields as $field) {
         if (empty(trim($data[$field] ?? ''))) {
-            return sprintf('Please fill in the %s field', $field);
+            return sprintf(__('Please fill in the %s field', 'user-list-plugin'), $field);
         }
     }
 
     if (!is_email($data['email'])) {
-        return 'Please enter a valid email address';
+        return __('Please enter a valid email address', 'user-list-plugin');
     }
 
     if (!in_array($data['gender'], ['male', 'female'], true)) {
-        return 'Gender must be either "male" or "female"';
+        return __('Gender must be either "male" or "female"', 'user-list-plugin');
     }
 
     if (!in_array($data['status'], ['active', 'inactive'], true)) {
-        return 'Status must be either "active" or "inactive"';
+        return __('Status must be either "active" or "inactive"', 'user-list-plugin');
     }
 
     return '';

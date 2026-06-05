@@ -19,8 +19,8 @@ function ulp_add_edit_submenu() : void
 {
     add_submenu_page(
         null,
-        'Edit User',
-        'Edit User',
+        __('Edit User', 'user-list-plugin'),
+        __('Edit User', 'user-list-plugin'),
         'manage_options',
         'ulp-user-edit',
         'ulp_render_edit_page'
@@ -34,7 +34,7 @@ function ulp_handle_edit(int $id) : array
     }
 
     if(!check_admin_referer('ulp_edit_nonce')) {
-        return ['success' => false, 'error' => 'Invalid WP Token'];
+        return ['success' => false, 'error' => __('Invalid WP Token', 'user-list-plugin')];
     }
 
     $source = get_option('ulp_data_source', 'local');
@@ -70,19 +70,19 @@ function ulp_handle_edit(int $id) : array
         $result = ulp_update_local_user($id, $user);
 
         if ($result) {
-            return ['success' => true, 'message' => 'Database user updated'];
+            return ['success' => true, 'message' => __('Database user updated', 'user-list-plugin')];
         }
 
-        return ['success' => false, 'error' => 'Error updating database user'];
+        return ['success' => false, 'error' => __('Error updating database user', 'user-list-plugin')];
     }
 
     $result = ulp_update_gorest_user($id, $user);
 
     if (is_wp_error($result)) {
-        return ['success' => false, 'error' => 'Error updating GoREST user'];
+        return ['success' => false, 'error' => __('Error updating GoREST user', 'user-list-plugin')];
     }
 
-    return ['success' => true, 'message' => 'GoREST user updated'];
+    return ['success' => true, 'message' => __('GoREST user updated', 'user-list-plugin')];
 }
 
 function ulp_render_edit_page() : void
@@ -91,7 +91,7 @@ function ulp_render_edit_page() : void
     $id = (int)$_GET['id'];
 
     if (empty($id)) {
-        echo '<div>No user ID provided</div>';
+        echo '<div>' . esc_html__('No user ID provided', 'user-list-plugin') . '</div>';
         exit;
     }
 
@@ -105,7 +105,7 @@ function ulp_render_edit_page() : void
     }
 
     if (is_null($user)) {
-        $error = 'Could not get user';
+        $error = __('Could not get user', 'user-list-plugin');
     }
 
     ?>
@@ -113,8 +113,8 @@ function ulp_render_edit_page() : void
     <div class="wrap">
         <form method="post" class="ulp-user-form">
             <?php wp_nonce_field('ulp_edit_nonce'); ?>
-            <?php echo ulp_render_user_form($source, 'Edit User', $error, $user); ?>
-            <button class="ulp-submit-button" type="submit" name="ulp_edit_submit"> Submit </button>
+            <?php echo ulp_render_user_form($source, __('Edit User', 'user-list-plugin'), $error, $user); ?>
+            <button class="ulp-submit-button" type="submit" name="ulp_edit_submit"><?php esc_html_e('Submit', 'user-list-plugin'); ?></button>
         </form>
     </div>
 

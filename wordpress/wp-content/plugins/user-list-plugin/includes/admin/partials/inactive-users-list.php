@@ -12,7 +12,7 @@ function ulp_render_inactive_users_block(array $inactive_users) : string
     ?>
 
     <div class="notice notice-success">
-        <p>Users with the following IDs haven't been updated for the past <?php echo esc_html(get_option('ulp_update_interval')); ?> days:</p>
+        <p><?php echo esc_html(sprintf(__("Users with the following IDs haven't been updated for the past %d days:", 'user-list-plugin'), get_option('ulp_update_interval'))); ?></p>
         <p>
             <?php
             foreach($inactive_users as $user)
