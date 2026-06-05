@@ -4,6 +4,9 @@
  * @package UserListPlugin
  */
 
+// PSR-12: declare(strict_types=1) should be added right after <?php
+// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
+
 if (!defined('ABSPATH')) {
     exit;
 }

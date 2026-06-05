@@ -3,6 +3,9 @@
  * @package UserListPlugin
  */
 
+// PSR-12: declare(strict_types=1) should be added right after <?php
+// PSR-12: Return type uses ' : type' — should be ': type' (no space before colon)
+
 function ulp_render_inactive_users_block(array $inactive_users) : string
 {
     ob_start();

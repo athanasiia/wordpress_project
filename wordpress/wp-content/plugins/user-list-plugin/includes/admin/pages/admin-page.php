@@ -4,6 +4,11 @@
  * @package UserListPlugin
  */
 
+// PSR-12: declare(strict_types=1) should be added right after <?php
+// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
+// PSR-1: File mixes side-effect calls (add_action) with function declarations.
+//        PSR-1 says a file should either declare symbols OR cause side-effects, not both.
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -45,18 +50,18 @@ function ulp_handle_delete() : array
 
         if ($result) {
             return ['success' => true, 'message' => 'Deleted ' . $result . ' database user(s)'];
-        } else {
-            return ['success' => false, 'error' => 'Error deleting database user(s)'];
         }
-    } else {
-        $result = ulp_delete_gorest_users($ids);
 
-        if (is_wp_error($result)) {
-            return ['success' => false, 'error' => 'Error deleting GoREST user(s)'];
-        } else {
-            return ['success' => true, 'message' => 'Deleted ' . $result . ' GoREST user(s)'];
-        }
+        return ['success' => false, 'error' => 'Error deleting database user(s)'];
     }
+
+    $result = ulp_delete_gorest_users($ids);
+
+    if (is_wp_error($result)) {
+        return ['success' => false, 'error' => 'Error deleting GoREST user(s)'];
+    }
+
+    return ['success' => true, 'message' => 'Deleted ' . $result . ' GoREST user(s)'];
 }
 
 function ulp_render_admin_page() : void
@@ -71,7 +76,7 @@ function ulp_render_admin_page() : void
     $filter_status = isset($_GET['filter_status']) ? sanitize_text_field($_GET['filter_status']) : 'all';
     $filter_gender = isset($_GET['filter_gender']) ? sanitize_text_field($_GET['filter_gender']) : 'all';
     $search_term = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
-    $page_number = isset($_GET['user_page']) ? intval($_GET['user_page']) : 1;
+    $page_number = isset($_GET['user_page']) ? (int)$_GET['user_page'] : 1;
 
     $filters = array(
         'status' => $filter_status ?? 'all',
@@ -87,7 +92,7 @@ function ulp_render_admin_page() : void
         return $value !== null;
     });
 
-    if ($source == 'local') {
+    if ($source === 'local') {
         $users = ulp_get_local_users($filters);
         $inactive_users = get_option('ulp_inactive_users_list');
     } else {
@@ -147,6 +152,7 @@ function ulp_render_admin_page() : void
 
             <div class="ulp-sort-buttons">
                 <span>Sort by:</span>
+                <?php // PSR-12: Lines below are 226-232 chars — hard limit is 120. Extract $url vars before the template. ?>
                 <a href="<?php echo esc_url(add_query_arg(array('sort_field' => 'name', 'sort_order' => $sort_field === 'name' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1), $base_url)); ?>" class="ulp-sort-button">
                     Name <?php echo $sort_field === 'name' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
                 </a>

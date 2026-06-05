@@ -4,6 +4,11 @@
  * @package UserListPlugin
  */
 
+// PSR-12: declare(strict_types=1) should be added right after <?php
+// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
+// PSR-1: File mixes side-effect calls (add_action) with function declarations.
+//        PSR-1 says a file should either declare symbols OR cause side-effects, not both.
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -66,24 +71,24 @@ function ulp_handle_edit(int $id) : array
 
         if ($result) {
             return ['success' => true, 'message' => 'Database user updated'];
-        } else {
-            return ['success' => false, 'error' => 'Error updating database user'];
         }
-    } else {
-        $result = ulp_update_gorest_user($id, $user);
 
-        if (is_wp_error($result)) {
-            return ['success' => false, 'error' => 'Error updating GoREST user'];
-        } else {
-            return ['success' => true, 'message' => 'GoREST user updated'];
-        }
+        return ['success' => false, 'error' => 'Error updating database user'];
     }
+
+    $result = ulp_update_gorest_user($id, $user);
+
+    if (is_wp_error($result)) {
+        return ['success' => false, 'error' => 'Error updating GoREST user'];
+    }
+
+    return ['success' => true, 'message' => 'GoREST user updated'];
 }
 
 function ulp_render_edit_page() : void
 {
     $source = get_option('ulp_data_source', 'local');
-    $id = intval($_GET['id']);
+    $id = (int)$_GET['id'];
 
     if (empty($id)) {
         echo '<div>No user ID provided</div>';

@@ -3,10 +3,14 @@
  * @package UserListPlugin
  */
 
+// PSR-12: declare(strict_types=1) should be added right after <?php
+// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
+
 if (!defined('ABSPATH')) {
     exit;
 }
 
+// PSR-12: $data = null without ?array type hint. Should be ?array $data = null
 function ulp_gorest_request(string $method, string $endpoint = '', array $data = null) : array | WP_Error
 {
     $url = 'https://gorest.in/public/v2/users' . $endpoint;

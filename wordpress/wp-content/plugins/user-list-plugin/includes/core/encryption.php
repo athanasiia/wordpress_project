@@ -4,6 +4,8 @@
  * @package UserListPlugin
  */
 
+// PSR-12: declare(strict_types=1) should be added right after <?php
+
 if (!defined('ABSPATH')) {
     exit;
 }

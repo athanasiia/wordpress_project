@@ -3,6 +3,10 @@
  * @package UserListPlugin
  */
 
+// PSR-12: declare(strict_types=1) should be added right after <?php
+// PSR-1: File mixes side-effect calls (add_action) with function declarations.
+//        PSR-1 says a file should either declare symbols OR cause side-effects, not both.
+
 if (!defined('ABSPATH')) {
     exit;
 }

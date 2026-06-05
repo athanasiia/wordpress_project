@@ -3,6 +3,9 @@
  * @package UserListPlugin
  */
 
+// PSR-12: declare(strict_types=1) should be added right after <?php
+// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -23,7 +26,7 @@ function ulp_create_table(): void
             status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
             created DATE NOT NULL,
             updated DATE NOT NULL,
-            
+
             INDEX idx_gender (gender),
             INDEX idx_status (status)
         ) $charset_collate;";
@@ -60,8 +63,8 @@ function ulp_get_local_users(array $filters): array
     $sort_order = isset($filters['order']) && strtoupper($filters['order']) === 'DESC' ? 'DESC' : 'ASC';
     $sql .= " ORDER BY $sort_field $sort_order";
 
-    $limit = isset($filters['limit']) ? intval($filters['limit']) : 5;
-    $offset = isset($filters['offset']) ? intval($filters['offset']) : 0;
+    $limit = isset($filters['limit']) ? (int)$filters['limit'] : 5;
+    $offset = isset($filters['offset']) ? (int)$filters['offset'] : 0;
 
     $sql .= " LIMIT %d OFFSET %d";
     $params[] = $limit;

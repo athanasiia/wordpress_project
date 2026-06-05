@@ -4,6 +4,11 @@
  * @package UserListPlugin
  */
 
+// PSR-12: declare(strict_types=1) should be added right after <?php
+// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
+// PSR-1: File mixes side-effect calls (add_action) with function declarations.
+//        PSR-1 says a file should either declare symbols OR cause side-effects, not both.
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -71,18 +76,18 @@ function ulp_handle_create() : array
 
         if ($result) {
             return ['success' => true, 'message' => 'Database user created'];
-        } else {
-            return ['success' => false, 'error' => 'Error creating database user'];
         }
-    } else {
-        $result = ulp_create_gorest_user($user);
 
-        if (is_wp_error($result)) {
-            return ['success' => false, 'error' => 'Error creating GoREST user'];
-        } else {
-            return ['success' => true, 'message' => 'GoREST user created'];
-        }
+        return ['success' => false, 'error' => 'Error creating database user'];
     }
+
+    $result = ulp_create_gorest_user($user);
+
+    if (is_wp_error($result)) {
+        return ['success' => false, 'error' => 'Error creating GoREST user'];
+    }
+
+    return ['success' => true, 'message' => 'GoREST user created'];
 }
 
 function ulp_render_create_page() : void
