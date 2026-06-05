@@ -3,6 +3,10 @@
  * @package UserListPlugin
  */
 
+// ISSUE: Missing ABSPATH guard. Without it this file can be loaded directly
+// over HTTP outside the WordPress bootstrap. Add:
+//   if ( ! defined( 'ABSPATH' ) ) { exit; }
+
 function ulp_render_result_modal(array $result) : string
 {
     ob_start();

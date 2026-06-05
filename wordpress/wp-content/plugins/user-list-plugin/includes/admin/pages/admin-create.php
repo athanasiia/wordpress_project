@@ -54,6 +54,12 @@ function ulp_handle_create() : array
     $user['gender'] = $gender;
     $user['status'] = $status;
 
+    // ISSUE: $user['created'] and $user['updated'] are never set here.
+    // The schema defines both columns as NOT NULL, so ulp_create_local_user()
+    // will produce a DB error on every local insert. Add:
+    //   $user['created'] = wp_date('Y-m-d');
+    //   $user['updated'] = wp_date('Y-m-d');
+
     $validation_result = ulp_user_form_validation($user, $source);
 
     if (!empty($validation_result)) {
