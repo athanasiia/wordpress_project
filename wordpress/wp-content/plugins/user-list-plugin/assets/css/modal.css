@@ -27,6 +27,9 @@
     font-size: 16px;
 }
 
+/* ISSUE: Dead rule — no element with class .ulp-modal-actions exists in
+   modals.php. The Close button sits directly inside .ulp-modal-content.
+   Either add the wrapper div in the template or remove this block. */
 .ulp-modal-actions {
     display: flex;
     justify-content: flex-end;
@@ -53,6 +56,7 @@
 }
 
 @media (max-width: 640px) {
+    /* ISSUE: Dead rule — .ulp-modal-actions is not rendered in the template. */
     .ulp-modal-actions {
         flex-direction: column;
     }

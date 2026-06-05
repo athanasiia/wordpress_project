@@ -6,6 +6,8 @@
 }
 
 .ulp-delete-panel {
+    /* ISSUE: margin: 0 is redundant — it is the default for block/flex elements
+       and has no visible effect here. */
     margin: 0;
     display: flex;
     align-items: center;

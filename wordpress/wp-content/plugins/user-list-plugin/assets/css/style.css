@@ -1,5 +1,11 @@
+/* ISSUE: Unscoped rule — overrides body background on every WP admin and
+   frontend page, not just plugin pages. Should be removed or scoped to
+   .ulp-users-container / a plugin-specific wrapper. */
 body {
     background-color: white;
 }
 
+/* ISSUE: :root is a global scope — the variable is available everywhere on the
+   page. Low risk, but if another plugin/theme declares --ulp-brand it will
+   conflict. Consider scoping to .ulp-users-container if isolation matters. */
 :root { --ulp-brand: #9873e1; }
