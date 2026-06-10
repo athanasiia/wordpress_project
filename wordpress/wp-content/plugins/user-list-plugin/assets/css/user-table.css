@@ -3,18 +3,11 @@
     font-size: 1rem;
     line-height: 1.5;
     font-weight: 400;
-    /* ISSUE: rgba(255,255,255,0.87) is the Vite default template's *font color*
-       value, copy-pasted here as a background. The result is a semi-transparent
-       white box that looks incorrect on any non-white page background. Use
-       background-color: white (or remove the rule entirely). */
-    background-color: rgba(255, 255, 255, 0.87);
     color: #242424;
     padding: 40px;
     margin: auto;
     width: fit-content;
-    /* ISSUE: max-width: none is redundant — it is already the default for block
-       elements and has no effect when width: fit-content is set. */
-    max-width: none;
+    --ulp-brand: #9873e1;
 }
 
 .ulp-filters-panel {
@@ -35,10 +28,7 @@
 }
 
 .ulp-search-input {
-    /* ISSUE: right padding 35px suggests a search icon was planned inside the
-       input but was never added. Either add the icon or reduce to match the
-       left padding (15px). */
-    padding: 10px 35px 10px 15px;
+    padding: 10px 15px 10px 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
@@ -119,17 +109,10 @@
 .ulp-table-button:focus-visible,
 .ulp-users-container a:focus-visible,
 .ulp-users-container a:hover,
-/* ISSUE: Wrong selector — .ulp-sort-button IS the <a> element, not its
-   container. This selector targets a hypothetical nested <a> that never
-   exists. Should be .ulp-sort-button:focus-visible */
-.ulp-sort-button a:focus-visible {
+.ulp-sort-button:focus-visible {
     outline: 3px solid var(--ulp-brand);
     outline-offset: 2px;
 }
-
-/* ISSUE: Missing rule for .ulp-user-checkbox — the class is used on the
-   delete-selection checkboxes in admin-page.php but has no styles defined
-   anywhere in this file. */
 
 @media (max-width: 640px) {
     .ulp-users-container {

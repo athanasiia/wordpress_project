@@ -1,17 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * @package UserListPlugin
  */
 
-// PSR-12: declare(strict_types=1) should be added right after <?php
-// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
+namespace UserListPlugin;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-function ulp_get_countries_list() : array
+function ulp_get_countries_list(): array
 {
     return [
         'AF' => 'Afghanistan',
@@ -269,7 +268,7 @@ function ulp_get_countries_list() : array
     ];
 }
 
-function ulp_render_countries_select(string $selected = '') : string
+function ulp_render_countries_select(string $selected = ''): string
 {
     $countries = ulp_get_countries_list();
     $html = '<select name="country" required>';

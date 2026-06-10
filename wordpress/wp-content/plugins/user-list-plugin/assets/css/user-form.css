@@ -10,26 +10,24 @@
     max-width: 300px;
     border-radius: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    --ulp-brand: #9873e1;
 }
 
 .ulp-user-form > div {
     width: 100%;
 }
 
-/* ISSUE: Missing rule for .ulp-errors — the class is rendered in user-form.php
-   when validation fails, but has no styles defined anywhere. Add at minimum:
-   .ulp-errors { color: red; font-size: 0.9rem; } */
+.ulp-errors {
+    color: red;
+    font-size: 0.9rem;
+}
 
 .ulp-user-form > div > input,
 .ulp-user-form > div > select {
     box-sizing: border-box;
     background-color: white;
-    /* ISSUE: margin: 5px with width: 100% causes horizontal overflow.
-       box-sizing: border-box covers padding/border but not margin, so the
-       element becomes 100% + 10px wide. Use padding on the parent instead,
-       or replace with margin: 5px 0 to keep only vertical spacing. */
     width: 100%;
-    margin: 5px;
+    margin: 5px 0;
     padding: 8px;
     border: none;
     border-radius: 5px;

@@ -1,17 +1,18 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * @package UserListPlugin
  */
 
-// PSR-12: declare(strict_types=1) should be added right after <?php
-// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
+namespace UserListPlugin;
+
+use WP_Error;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// PSR-12: $data = null without ?array type hint. Should be ?array $data = null
-function ulp_gorest_request(string $method, string $endpoint = '', array $data = null) : array | WP_Error
+function ulp_gorest_request(string $method, string $endpoint = '', ?array $data = null): array | WP_Error
 {
     $url = 'https://gorest.in/public/v2/users' . $endpoint;
 
@@ -52,7 +53,7 @@ function ulp_gorest_request(string $method, string $endpoint = '', array $data =
     return $response_data ?? [];
 }
 
-function ulp_get_gorest_users(array $filters) : array
+function ulp_get_gorest_users(array $filters): array
 {
     $all_users = ulp_get_cached_gorest_users();
 
@@ -77,7 +78,7 @@ function ulp_get_gorest_users(array $filters) : array
     }, $paginated_users);
 }
 
-function ulp_get_gorest_user(int $id) : array
+function ulp_get_gorest_user(int $id): array
 {
     $response = ulp_gorest_request('GET', '/' . $id);
 
@@ -88,9 +89,9 @@ function ulp_get_gorest_user(int $id) : array
     return $response;
 }
 
-function ulp_create_gorest_user(array $data) : int | false | WP_Error
+function ulp_create_gorest_user(array $data): int | false | WP_Error
 {
-    if (empty(get_option('ulp_gorest_token'))) {
+    if (empty(ulp_get_decrypted_token())) {
         return new WP_Error('no_token', __('Missing API token', 'user-list-plugin'));
     }
 
@@ -103,9 +104,9 @@ function ulp_create_gorest_user(array $data) : int | false | WP_Error
     return $response['id'] ?? false;
 }
 
-function ulp_update_gorest_user(int $id, array $data) : int | false | WP_Error
+function ulp_update_gorest_user(int $id, array $data): int | false | WP_Error
 {
-    if (empty(get_option('ulp_gorest_token'))) {
+    if (empty(ulp_get_decrypted_token())) {
         return new WP_Error('no_token', __('Missing API token', 'user-list-plugin'));
     }
 
@@ -117,9 +118,9 @@ function ulp_update_gorest_user(int $id, array $data) : int | false | WP_Error
     return $response['id'] ?? false;
 }
 
-function ulp_delete_gorest_users(array $ids) : int | false | WP_Error
+function ulp_delete_gorest_users(array $ids): int | false | WP_Error
 {
-    if (empty(get_option('ulp_gorest_token'))) {
+    if (empty(ulp_get_decrypted_token())) {
         return new WP_Error('no_token', __('Missing API token', 'user-list-plugin'));
     }
 
@@ -165,7 +166,7 @@ function ulp_fetch_all_gorest_users(): array
     return $response;
 }
 
-function ulp_apply_user_filters(array $users, array $filters) : array
+function ulp_apply_user_filters(array $users, array $filters): array
 {
     return array_filter($users, function($user) use ($filters) {
         $user = (array)$user;
@@ -195,7 +196,7 @@ function ulp_apply_user_filters(array $users, array $filters) : array
     });
 }
 
-function ulp_apply_user_sorting(array $users, string $sort, string $order) : array
+function ulp_apply_user_sorting(array $users, string $sort, string $order): array
 {
     if (empty($users)) {
         return $users;

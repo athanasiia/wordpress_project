@@ -1,53 +1,60 @@
-<?php
+<?php declare(strict_types=1);
 
-// PSR-12: declare(strict_types=1) should be added right after <?php
-// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
-// PSR-1: File mixes side-effect calls (add_action) with function declarations.
-//        PSR-1 says a file should either declare symbols OR cause side-effects, not both.
+/**
+ * @package UserListPlugin
+ */
+
+namespace UserListPlugin;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-add_action('admin_menu', 'ulp_add_settings_page');
-
-function ulp_add_settings_page() : void
+function ulp_add_settings_page(): void
 {
     add_options_page(
         __('User List Plugin Settings', 'user-list-plugin'),
         __('User List Plugin', 'user-list-plugin'),
         'manage_options',
         'ulp-settings',
-        'ulp_render_settings_page'
+        __NAMESPACE__ . '\\ulp_render_settings_page'
     );
 }
 
-function ulp_render_settings_page() : void
+function ulp_process_settings(): void
 {
-    if (isset($_POST['ulp_save_settings']) && check_admin_referer('ulp_settings_nonce')) {
-        $source = sanitize_text_field($_POST['ulp_data_source']);
-        if (!in_array($source, ['local', 'gorest'], true)) {
-            $source = 'local';
-        }
-
-        $token = sanitize_text_field($_POST['ulp_gorest_token']);
-
-        $days = absint($_POST['ulp_update_interval']);
-
-        if (!is_numeric($days)) {
-            echo '<div class="notice notice-error">' . esc_html__('Incorrect number of days', 'user-list-plugin') . '</div>';
-        } else {
-            update_option('ulp_data_source', $source);
-
-            if (!empty($token) && !ulp_encrypt_and_save_token($token)) {
-                echo '<div class="notice notice-error">' . esc_html__('Could not update token', 'user-list-plugin') . '</div>';
-            }
-
-            update_option('ulp_update_interval', $days);
-
-            echo '<div class="notice notice-success">' . esc_html__('Saved', 'user-list-plugin') . '</div>';
-        }
+    if (!isset($_POST['ulp_save_settings']) || !check_admin_referer('ulp_settings_nonce')) {
+        return;
     }
+
+    $source = sanitize_text_field($_POST['ulp_data_source']);
+    if (!in_array($source, ['local', 'gorest'], true)) {
+        $source = 'local';
+    }
+
+    $token = sanitize_text_field($_POST['ulp_gorest_token']);
+
+    if (!is_numeric($_POST['ulp_update_interval']) || (int)$_POST['ulp_update_interval'] <= 0) {
+        echo '<div class="notice notice-error">' . esc_html__('Incorrect number of days', 'user-list-plugin') . '</div>';
+        return;
+    }
+
+    $days = absint($_POST['ulp_update_interval']);
+
+    update_option('ulp_data_source', $source);
+    update_option('ulp_update_interval', $days);
+
+    if (!empty($token) && !ulp_encrypt_and_save_token($token)) {
+        echo '<div class="notice notice-error">' . esc_html__('Could not update token', 'user-list-plugin') . '</div>';
+        return;
+    }
+
+    echo '<div class="notice notice-success">' . esc_html__('Saved', 'user-list-plugin') . '</div>';
+}
+
+function ulp_render_settings_page(): void
+{
+    ulp_process_settings();
 
     $current_source = get_option('ulp_data_source', 'local');
     ?>

@@ -1,17 +1,14 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * @package UserListPlugin
  */
 
-// PSR-12: declare(strict_types=1) should be added right after <?php
-// PSR-1: File mixes side-effect calls (add_action) with function declarations.
-//        PSR-1 says a file should either declare symbols OR cause side-effects, not both.
+namespace UserListPlugin;
 
 if (!defined('ABSPATH')) {
     exit;
 }
-
-add_action('ulp_check_inactive_users', 'ulp_check_inactive_users');
 
 function ulp_activate_cron(): void
 {

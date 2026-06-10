@@ -1,16 +1,16 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * @package UserListPlugin
  */
 
-// PSR-12: declare(strict_types=1) should be added right after <?php
-// PSR-12: Return type uses ' : type' — should be ': type' (no space before colon)
+namespace UserListPlugin;
 
-// ISSUE: Missing ABSPATH guard. Without it this file can be loaded directly
-// over HTTP outside the WordPress bootstrap. Add:
-//   if ( ! defined( 'ABSPATH' ) ) { exit; }
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-function ulp_render_result_modal(array $result) : string
+function ulp_render_result_modal(array $result): string
 {
     ob_start();
     ?>

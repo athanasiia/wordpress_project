@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * @package UserListPlugin
  */
 
-// PSR-12: declare(strict_types=1) should be added right after <?php
-// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
+namespace UserListPlugin;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -88,21 +88,21 @@ function ulp_get_local_user(int $id): ?array
     return $wpdb->get_row($result, ARRAY_A);
 }
 
-function ulp_create_local_user(array $data) : int | false
+function ulp_create_local_user(array $data): int | false
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'ulp_users';
     return $wpdb->insert($table_name, $data);
 }
 
-function ulp_update_local_user(int $id, array $data) : int | false
+function ulp_update_local_user(int $id, array $data): int | false
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'ulp_users';
     return $wpdb->update($table_name, $data, ['id' => $id]);
 }
 
-function ulp_delete_local_users(array $ids) : int | false
+function ulp_delete_local_users(array $ids): int | false
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'ulp_users';

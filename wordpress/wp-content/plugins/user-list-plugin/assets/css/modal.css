@@ -8,6 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    --ulp-brand: #9873e1;
 }
 
 .ulp-modal {
@@ -16,6 +17,7 @@
     width: 90%;
     max-width: 400px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
 }
 
 .ulp-modal-content {
@@ -27,9 +29,6 @@
     font-size: 16px;
 }
 
-/* ISSUE: Dead rule — no element with class .ulp-modal-actions exists in
-   modals.php. The Close button sits directly inside .ulp-modal-content.
-   Either add the wrapper div in the template or remove this block. */
 .ulp-modal-actions {
     display: flex;
     justify-content: flex-end;

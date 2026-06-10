@@ -1,16 +1,16 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * @package UserListPlugin
  */
 
-// PSR-12: declare(strict_types=1) should be added right after <?php
-// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
+namespace UserListPlugin;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-function ulp_render_user_form(string $source, string $title, string $errors = '', array $form_data = []) : string
+function ulp_render_user_form(string $source, string $title, string $errors = '', array $form_data = []): string
 {
     $email = isset($form_data['email']) ? esc_attr($form_data['email']) : '';
     $name = isset($form_data['name']) ? esc_attr($form_data['name']) : '';
@@ -90,7 +90,7 @@ function ulp_render_user_form(string $source, string $title, string $errors = ''
     return ob_get_clean();
 }
 
-function ulp_user_form_validation(array $data, string $source) : string
+function ulp_user_form_validation(array $data, string $source): string
 {
     if ($source === 'local') {
         $required_fields = ['name', 'email', 'country', 'city', 'gender', 'status'];

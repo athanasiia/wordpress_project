@@ -1,21 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * @package UserListPlugin
  */
 
-// PSR-12: declare(strict_types=1) should be added right after <?php
-// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
-// PSR-1: File mixes side-effect calls (add_action) with function declarations.
-//        PSR-1 says a file should either declare symbols OR cause side-effects, not both.
+namespace UserListPlugin;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-add_action('admin_menu', 'ulp_add_create_submenu');
-
-function ulp_add_create_submenu() : void
+function ulp_add_create_submenu(): void
 {
     add_submenu_page(
         'ulp-users',
@@ -23,74 +18,11 @@ function ulp_add_create_submenu() : void
         __('Create User', 'user-list-plugin'),
         'manage_options',
         'ulp-user-create',
-        'ulp_render_create_page'
+        __NAMESPACE__ . '\\ulp_render_create_page'
     );
 }
 
-function ulp_handle_create() : array
-{
-    if(!isset($_POST['ulp_create_submit'])) {
-        return [];
-    }
-
-    if(!check_admin_referer('ulp_create_nonce')) {
-        return ['success' => false, 'error' => __('Invalid WP Token', 'user-list-plugin')];
-    }
-
-    $source = get_option('ulp_data_source', 'local');
-
-    $name = sanitize_text_field($_POST['name']);
-    $email = sanitize_email($_POST['email']);
-    $gender = sanitize_text_field($_POST['gender']);
-    $status = sanitize_text_field($_POST['status']);
-
-    $user = [];
-
-    if ($source === 'local') {
-        $country = sanitize_text_field($_POST['country']);
-        $city = sanitize_text_field($_POST['city']);
-
-        $user['country'] = $country;
-        $user['city'] = $city;
-    }
-
-    $user['name'] = $name;
-    $user['email'] = $email;
-    $user['gender'] = $gender;
-    $user['status'] = $status;
-
-    // ISSUE: $user['created'] and $user['updated'] are never set here.
-    // The schema defines both columns as NOT NULL, so ulp_create_local_user()
-    // will produce a DB error on every local insert. Add:
-    //   $user['created'] = wp_date('Y-m-d');
-    //   $user['updated'] = wp_date('Y-m-d');
-
-    $validation_result = ulp_user_form_validation($user, $source);
-
-    if (!empty($validation_result)) {
-        return ['success' => false, 'error' => $validation_result];
-    }
-
-    if ($source === 'local') {
-        $result = ulp_create_local_user($user);
-
-        if ($result) {
-            return ['success' => true, 'message' => __('Database user created', 'user-list-plugin')];
-        }
-
-        return ['success' => false, 'error' => __('Error creating database user', 'user-list-plugin')];
-    }
-
-    $result = ulp_create_gorest_user($user);
-
-    if (is_wp_error($result)) {
-        return ['success' => false, 'error' => __('Error creating GoREST user', 'user-list-plugin')];
-    }
-
-    return ['success' => true, 'message' => __('GoREST user created', 'user-list-plugin')];
-}
-
-function ulp_render_create_page() : void
+function ulp_render_create_page(): void
 {
     $source = get_option('ulp_data_source', 'local');
     $result = ulp_handle_create();

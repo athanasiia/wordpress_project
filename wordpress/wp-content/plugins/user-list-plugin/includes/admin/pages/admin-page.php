@@ -1,73 +1,28 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * @package UserListPlugin
  */
 
-// PSR-12: declare(strict_types=1) should be added right after <?php
-// PSR-12: All return types use ' : type' — PSR-12 requires no space before the colon: 'func(): type'
-// PSR-1: File mixes side-effect calls (add_action) with function declarations.
-//        PSR-1 says a file should either declare symbols OR cause side-effects, not both.
+namespace UserListPlugin;
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-add_action('admin_menu', 'ulp_add_admin_menu');
-
-function ulp_add_admin_menu() : void
+function ulp_add_admin_menu(): void
 {
     add_menu_page(
-        __('Manage Users', 'user-list-plugin'),
-        __('User List', 'user-list-plugin'),
-        'manage_options',
-        'ulp-users',
-        'ulp_render_admin_page'
+            __('Manage Users', 'user-list-plugin'),
+            __('User List', 'user-list-plugin'),
+            'manage_options',
+            'ulp-users',
+            __NAMESPACE__ . '\\ulp_render_admin_page'
     );
 }
 
-function ulp_handle_delete() : array
+function ulp_get_admin_page_data(): array
 {
-    if (!isset($_POST['ulp_delete_submit'])) {
-        return [];
-    }
-
-    if (!check_admin_referer('ulp_delete_nonce')) {
-        return ['success' => false, 'error' => __('Invalid WP Token', 'user-list-plugin')];
-    }
-
-    $ids_json = sanitize_text_field($_POST['delete_ids']);
-    $ids = json_decode($ids_json, true);
-
-    if (empty($ids) || !is_array($ids)) {
-        return ['success' => false, 'error' => __('No users selected', 'user-list-plugin')];
-    }
-
-    $source = get_option('ulp_data_source', 'local');
-
-    if ($source === 'local') {
-        $result = ulp_delete_local_users($ids);
-
-        if ($result) {
-            return ['success' => true, 'message' => sprintf(__('Deleted %d database user(s)', 'user-list-plugin'), $result)];
-        }
-
-        return ['success' => false, 'error' => __('Error deleting database user(s)', 'user-list-plugin')];
-    }
-
-    $result = ulp_delete_gorest_users($ids);
-
-    if (is_wp_error($result)) {
-        return ['success' => false, 'error' => __('Error deleting GoREST user(s)', 'user-list-plugin')];
-    }
-
-    return ['success' => true, 'message' => sprintf(__('Deleted %d GoREST user(s)', 'user-list-plugin'), $result)];
-}
-
-function ulp_render_admin_page() : void
-{
-    $result = ulp_handle_delete();
-
     $source = get_option('ulp_data_source', 'local');
     $items_per_page = 5;
 
@@ -79,13 +34,13 @@ function ulp_render_admin_page() : void
     $page_number = isset($_GET['user_page']) ? (int)$_GET['user_page'] : 1;
 
     $filters = array(
-        'status' => $filter_status ?? 'all',
-        'gender' => $filter_gender ?? 'all',
-        'search' => !empty($search_term) ? $search_term : '',
-        'sort' => $sort_field,
-        'order' => $sort_order,
-        'limit' => $items_per_page,
-        'offset' => ($page_number - 1) * $items_per_page
+            'status' => $filter_status ?? 'all',
+            'gender' => $filter_gender ?? 'all',
+            'search' => !empty($search_term) ? $search_term : '',
+            'sort' => $sort_field,
+            'order' => $sort_order,
+            'limit' => $items_per_page,
+            'offset' => ($page_number - 1) * $items_per_page
     );
 
     $filters = array_filter($filters, function($value) {
@@ -99,11 +54,39 @@ function ulp_render_admin_page() : void
         $users = ulp_get_gorest_users($filters);
     }
 
-    $base_url = admin_url('admin.php?page=ulp-users');
+    $name_sort_params = array('sort_field' => 'name', 'sort_order' => $sort_field === 'name' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1);
+    $email_sort_params = array('sort_field' => 'email', 'sort_order' => $sort_field === 'email' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1);
+    $id_sort_params = array('sort_field' => 'id', 'sort_order' => $sort_field === 'id' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1);
+
+    return array(
+            'result' => ulp_handle_delete(),
+            'source' => $source,
+            'users' => $users,
+            'inactive_users' => $inactive_users ?? null,
+            'sort_field' => $sort_field,
+            'sort_order' => $sort_order,
+            'filter_status' => $filter_status,
+            'filter_gender' => $filter_gender,
+            'search_term' => $search_term,
+            'page_number' => $page_number,
+            'items_per_page' => $items_per_page,
+            'sort_params' => array(
+                    'name' => $name_sort_params,
+                    'email' => $email_sort_params,
+                    'id' => $id_sort_params
+            ),
+            'base_url' => admin_url('admin.php?page=ulp-users')
+    );
+}
+
+function ulp_render_admin_page(): void
+{
+    $data = ulp_get_admin_page_data();
+
+    if ($data['inactive_users']) {
+        echo ulp_render_inactive_users_block($data['inactive_users']);
+    }
     ?>
-
-    <?php if (isset($inactive_users) && $inactive_users) echo ulp_render_inactive_users_block($inactive_users); ?>
-
     <div class="ulp-users-container">
         <div class="ulp-action-panel">
             <button class="ulp-table-button" id="createNewUserBtn">
@@ -115,7 +98,7 @@ function ulp_render_admin_page() : void
                 </button>
                 <div>
                     <label><?php esc_html_e('Check all', 'user-list-plugin'); ?></label>
-                    <input type="checkbox"  id="selectAllCheckbox" />
+                    <input type="checkbox" id="selectAllCheckbox" />
                 </div>
             </div>
         </div>
@@ -123,7 +106,7 @@ function ulp_render_admin_page() : void
         <div class="ulp-filters-panel">
             <div class="ulp-search-box">
                 <form method="get" action="">
-                    <input type="text" placeholder="<?php esc_attr_e('Search by name...', 'user-list-plugin'); ?>" name="search" value="<?php echo esc_attr($search_term); ?>" class="ulp-search-input" />
+                    <input type="text" placeholder="<?php esc_attr_e('Search by name...', 'user-list-plugin'); ?>" name="search" value="<?php echo esc_attr($data['search_term']); ?>" class="ulp-search-input" />
                     <?php foreach($_GET as $key => $value): ?>
                         <?php if($key !== 'search' && $key !== 'user_page'): ?>
                             <input type="hidden" name="<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($value); ?>" />
@@ -135,32 +118,31 @@ function ulp_render_admin_page() : void
             <div class="ulp-filter-group">
                 <label><?php esc_html_e('Status:', 'user-list-plugin'); ?></label>
                 <select class="ulp-filter-select" onchange="this.form.submit()" form="filterForm">
-                    <option value="all" <?php echo $filter_status === 'all' ? 'selected' : ''; ?>><?php esc_html_e('All', 'user-list-plugin'); ?></option>
-                    <option value="active" <?php echo $filter_status === 'active' ? 'selected' : ''; ?>><?php esc_html_e('Active', 'user-list-plugin'); ?></option>
-                    <option value="inactive" <?php echo $filter_status === 'inactive' ? 'selected' : ''; ?>><?php esc_html_e('Inactive', 'user-list-plugin'); ?></option>
+                    <option value="all" <?php echo $data['filter_status'] === 'all' ? 'selected' : ''; ?>><?php esc_html_e('All', 'user-list-plugin'); ?></option>
+                    <option value="active" <?php echo $data['filter_status'] === 'active' ? 'selected' : ''; ?>><?php esc_html_e('Active', 'user-list-plugin'); ?></option>
+                    <option value="inactive" <?php echo $data['filter_status'] === 'inactive' ? 'selected' : ''; ?>><?php esc_html_e('Inactive', 'user-list-plugin'); ?></option>
                 </select>
             </div>
 
             <div class="ulp-filter-group">
                 <label><?php esc_html_e('Gender:', 'user-list-plugin'); ?></label>
                 <select class="ulp-filter-select" onchange="this.form.submit()" form="filterForm">
-                    <option value="all" <?php echo $filter_gender === 'all' ? 'selected' : ''; ?>><?php esc_html_e('All', 'user-list-plugin'); ?></option>
-                    <option value="male" <?php echo $filter_gender === 'male' ? 'selected' : ''; ?>><?php esc_html_e('Male', 'user-list-plugin'); ?></option>
-                    <option value="female" <?php echo $filter_gender === 'female' ? 'selected' : ''; ?>><?php esc_html_e('Female', 'user-list-plugin'); ?></option>
+                    <option value="all" <?php echo $data['filter_gender'] === 'all' ? 'selected' : ''; ?>><?php esc_html_e('All', 'user-list-plugin'); ?></option>
+                    <option value="male" <?php echo $data['filter_gender'] === 'male' ? 'selected' : ''; ?>><?php esc_html_e('Male', 'user-list-plugin'); ?></option>
+                    <option value="female" <?php echo $data['filter_gender'] === 'female' ? 'selected' : ''; ?>><?php esc_html_e('Female', 'user-list-plugin'); ?></option>
                 </select>
             </div>
 
             <div class="ulp-sort-buttons">
                 <span><?php esc_html_e('Sort by:', 'user-list-plugin'); ?></span>
-                <?php // PSR-12: Lines below are 226-232 chars — hard limit is 120. Extract $url vars before the template. ?>
-                <a href="<?php echo esc_url(add_query_arg(array('sort_field' => 'name', 'sort_order' => $sort_field === 'name' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1), $base_url)); ?>" class="ulp-sort-button">
-                    Name <?php echo $sort_field === 'name' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
+                <a href="<?php echo esc_url(add_query_arg($data['sort_params']['name'], $data['base_url'])); ?>" class="ulp-sort-button">
+                    Name <?php echo $data['sort_field'] === 'name' ? ($data['sort_order'] === 'asc' ? '↑' : '↓') : '↕'; ?>
                 </a>
-                <a href="<?php echo esc_url(add_query_arg(array('sort_field' => 'email', 'sort_order' => $sort_field === 'email' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1), $base_url)); ?>" class="ulp-sort-button">
-                    Email <?php echo $sort_field === 'email' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
+                <a href="<?php echo esc_url(add_query_arg($data['sort_params']['email'], $data['base_url'])); ?>" class="ulp-sort-button">
+                    Email <?php echo $data['sort_field'] === 'email' ? ($data['sort_order'] === 'asc' ? '↑' : '↓') : '↕'; ?>
                 </a>
-                <a href="<?php echo esc_url(add_query_arg(array('sort_field' => 'id', 'sort_order' => $sort_field === 'id' && $sort_order === 'asc' ? 'desc' : 'asc', 'user_page' => 1), $base_url)); ?>" class="ulp-sort-button">
-                    ID <?php echo $sort_field === 'id' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
+                <a href="<?php echo esc_url(add_query_arg($data['sort_params']['id'], $data['base_url'])); ?>" class="ulp-sort-button">
+                    ID <?php echo $data['sort_field'] === 'id' ? ($data['sort_order'] === 'asc' ? '↑' : '↓') : '↕'; ?>
                 </a>
             </div>
         </div>
@@ -171,8 +153,8 @@ function ulp_render_admin_page() : void
                     <input type="hidden" name="<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($value); ?>" />
                 <?php endif; ?>
             <?php endforeach; ?>
-            <input type="hidden" name="filter_status" id="status_input" value="<?php echo esc_attr($filter_status); ?>" />
-            <input type="hidden" name="filter_gender" id="gender_input" value="<?php echo esc_attr($filter_gender); ?>" />
+            <input type="hidden" name="filter_status" id="status_input" value="<?php echo esc_attr($data['filter_status']); ?>" />
+            <input type="hidden" name="filter_gender" id="gender_input" value="<?php echo esc_attr($data['filter_gender']); ?>" />
         </form>
 
         <div>
@@ -184,20 +166,20 @@ function ulp_render_admin_page() : void
                     <th><?php esc_html_e('ID', 'user-list-plugin'); ?></th>
                     <th><?php esc_html_e('Email', 'user-list-plugin'); ?></th>
                     <th><?php esc_html_e('Name', 'user-list-plugin'); ?></th>
-                    <?php if($source === 'local'): ?>
+                    <?php if($data['source'] === 'local'): ?>
                         <th><?php esc_html_e('City', 'user-list-plugin'); ?></th>
                         <th><?php esc_html_e('Country', 'user-list-plugin'); ?></th>
                     <?php endif; ?>
                     <th><?php esc_html_e('Gender', 'user-list-plugin'); ?></th>
                     <th><?php esc_html_e('Status', 'user-list-plugin'); ?></th>
-                    <?php if($source === 'local'): ?>
+                    <?php if($data['source'] === 'local'): ?>
                         <th><?php esc_html_e('Created', 'user-list-plugin'); ?></th>
                         <th><?php esc_html_e('Updated', 'user-list-plugin'); ?></th>
                     <?php endif; ?>
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($users as $user): ?>
+                <?php foreach($data['users'] as $user): ?>
                     <tr>
                         <td>
                             <button class="ulp-table-button" data-id="<?php echo esc_attr($user['id']); ?>">
@@ -210,13 +192,13 @@ function ulp_render_admin_page() : void
                         <td><?php echo esc_html($user['id']); ?></td>
                         <td><?php echo esc_html($user['email']); ?></td>
                         <td><?php echo esc_html($user['name']); ?></td>
-                        <?php if($source === 'local'): ?>
+                        <?php if($data['source'] === 'local'): ?>
                             <td><?php echo isset($user['city']) ? esc_html($user['city']) : ''; ?></td>
                             <td><?php echo isset($user['country']) ? esc_html($user['country']) : ''; ?></td>
                         <?php endif; ?>
                         <td><?php echo esc_html($user['gender']); ?></td>
                         <td><?php echo wp_kses_post(apply_filters('ulp_add_icons', $user['status'])); ?></td>
-                        <?php if($source === 'local'): ?>
+                        <?php if($data['source'] === 'local'): ?>
                             <td><?php echo isset($user['created']) ? esc_html($user['created']) : ''; ?></td>
                             <td><?php echo isset($user['updated']) ? esc_html($user['updated']) : ''; ?></td>
                         <?php endif; ?>
@@ -226,14 +208,14 @@ function ulp_render_admin_page() : void
             </table>
 
             <div class="ulp-table-pages">
-                <?php if($page_number > 1): ?>
-                    <a href="<?php echo esc_url(add_query_arg('user_page', $page_number - 1, $base_url)); ?>" class="ulp-table-button">&#10094;</a>
+                <?php if($data['page_number'] > 1): ?>
+                    <a href="<?php echo esc_url(add_query_arg('user_page', $data['page_number'] - 1, $data['base_url'])); ?>" class="ulp-table-button">&#10094;</a>
                 <?php endif; ?>
 
-                <span><?php echo esc_html($page_number); ?></span>
+                <span><?php echo esc_html($data['page_number']); ?></span>
 
-                <?php if(count($users) === $items_per_page): ?>
-                    <a href="<?php echo esc_url(add_query_arg('user_page', $page_number + 1, $base_url)); ?>" class="ulp-table-button">&#10095;</a>
+                <?php if(count($data['users']) === $data['items_per_page']): ?>
+                    <a href="<?php echo esc_url(add_query_arg('user_page', $data['page_number'] + 1, $data['base_url'])); ?>" class="ulp-table-button">&#10095;</a>
                 <?php endif; ?>
             </div>
         </div>
@@ -245,8 +227,7 @@ function ulp_render_admin_page() : void
         echo '</form>';
         echo '<div id="confirmModalContainer" style="display: none;"></div>';?>
 
-        <?php if (isset($result['success'])) echo ulp_render_result_modal($result); ?>
+        <?php if (isset($data['result']['success'])) echo ulp_render_result_modal($data['result']); ?>
     </div>
-
     <?php
 }
