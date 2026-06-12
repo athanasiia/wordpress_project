@@ -50,6 +50,11 @@ function ulp_check_inactive_users(): void
 
     foreach ($users as $user) {
         $user_update_date = date_create($user['updated']);
+        // FIX: date_create() returns false for empty or malformed dates.
+        // Calling date_diff(false, ...) throws a TypeError in PHP 8.
+        if (!$user_update_date) {
+            continue;
+        }
         if (date_diff($user_update_date, $current_date)->format('%a') > $update_interval) {
             $no_updates_users[] = $user['id'];
         }

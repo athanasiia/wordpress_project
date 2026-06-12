@@ -36,7 +36,7 @@ function ulp_render_user_list_shortcode($atts): false | string
     return ob_get_clean();
 }
 
-function ulp_render_search_form($data): string
+function ulp_render_search_form(array $data): string
 {
     $base_url = get_permalink();
     $search_term = $data['search_term'];
@@ -54,7 +54,7 @@ function ulp_render_search_form($data): string
     return ob_get_clean();
 }
 
-function ulp_render_filter_controls($data): string
+function ulp_render_filter_controls(array $data): string
 {
     ob_start();
     ?>
@@ -79,7 +79,7 @@ function ulp_render_filter_controls($data): string
     return ob_get_clean();
 }
 
-function ulp_render_sort_buttons($data): string
+function ulp_render_sort_buttons(array $data): string
 {
     $base_url = get_permalink();
     $sort_field = $data['sort_field'];
@@ -91,20 +91,20 @@ function ulp_render_sort_buttons($data): string
     <div class="ulp-sort-buttons">
         <span><?php esc_html_e('Sort by:', 'user-list-plugin'); ?></span>
         <a href="<?php echo esc_url(add_query_arg($sort_params['name'], $base_url)); ?>" class="ulp-sort-button">
-            Name <?php echo $sort_field === 'name' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
+            <?php esc_html_e('Name', 'user-list-plugin'); ?> <?php echo $sort_field === 'name' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
         </a>
         <a href="<?php echo esc_url(add_query_arg($sort_params['email'], $base_url)); ?>" class="ulp-sort-button">
-            Email <?php echo $sort_field === 'email' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
+            <?php esc_html_e('Email', 'user-list-plugin'); ?> <?php echo $sort_field === 'email' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
         </a>
         <a href="<?php echo esc_url(add_query_arg($sort_params['id'], $base_url)); ?>" class="ulp-sort-button">
-            ID <?php echo $sort_field === 'id' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
+            <?php esc_html_e('ID', 'user-list-plugin'); ?> <?php echo $sort_field === 'id' ? ($sort_order === 'asc' ? '↑' : '↓') : '↕'; ?>
         </a>
     </div>
     <?php
     return ob_get_clean();
 }
 
-function ulp_render_hidden_filter_form($data): string
+function ulp_render_hidden_filter_form(array $data): string
 {
     $base_url = get_permalink();
     $filter_status = $data['filter_status'];
@@ -121,7 +121,7 @@ function ulp_render_hidden_filter_form($data): string
     return ob_get_clean();
 }
 
-function ulp_render_user_table($data): string
+function ulp_render_user_table(array $data): string
 {
     $users = $data['users'];
     $source = $data['source'];
@@ -162,7 +162,7 @@ function ulp_render_user_table($data): string
     return ob_get_clean();
 }
 
-function ulp_render_pagination($data): string
+function ulp_render_pagination(array $data): string
 {
     $current_url = home_url(wp_unslash($_SERVER['REQUEST_URI']));
     $page_number = $data['page_number'];
@@ -186,7 +186,7 @@ function ulp_render_pagination($data): string
     return ob_get_clean();
 }
 
-function ulp_render_hidden_fields_except($exclude_keys): string
+function ulp_render_hidden_fields_except(array $exclude_keys): string
 {
     $output = '';
     foreach($_GET as $key => $value) {

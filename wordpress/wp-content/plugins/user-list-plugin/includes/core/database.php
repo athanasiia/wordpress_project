@@ -43,12 +43,12 @@ function ulp_get_local_users(array $filters): array
     $sql = "SELECT * FROM $table_name WHERE 1=1";
     $params = array();
 
-    if (!empty($filters['status']) && $filters['status'] != 'all') {
+    if (!empty($filters['status']) && $filters['status'] !== 'all') {
         $sql .= " AND status = %s";
         $params[] = $filters['status'];
     }
 
-    if (!empty($filters['gender']) && $filters['gender'] != 'all') {
+    if (!empty($filters['gender']) && $filters['gender'] !== 'all') {
         $sql .= " AND gender = %s";
         $params[] = $filters['gender'];
     }

@@ -33,7 +33,7 @@ function ulp_render_user_form(string $source, string $title, string $errors = ''
         <input
                 type="email"
                 name="email"
-                value="<?php echo $email; ?>"
+                value="<?php echo esc_attr($email); ?>"
                 placeholder="<?php esc_attr_e('example@mail.com', 'user-list-plugin'); ?>"
                 required
         />
@@ -44,7 +44,7 @@ function ulp_render_user_form(string $source, string $title, string $errors = ''
         <input
                 type="text"
                 name="name"
-                value="<?php echo $name; ?>"
+                value="<?php echo esc_attr($name); ?>"
                 placeholder="<?php esc_attr_e('John Doe', 'user-list-plugin'); ?>"
                 required
         />
@@ -61,7 +61,7 @@ function ulp_render_user_form(string $source, string $title, string $errors = ''
         <input
                 type="text"
                 name="city"
-                value="<?php echo $city; ?>"
+                value="<?php echo esc_attr($city); ?>"
                 placeholder="<?php esc_attr_e('New York', 'user-list-plugin'); ?>"
                 required
         />

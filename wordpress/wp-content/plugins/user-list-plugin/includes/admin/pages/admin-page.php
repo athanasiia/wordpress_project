@@ -34,8 +34,8 @@ function ulp_get_admin_page_data(): array
     $page_number = isset($_GET['user_page']) ? (int)$_GET['user_page'] : 1;
 
     $filters = array(
-            'status' => $filter_status ?? 'all',
-            'gender' => $filter_gender ?? 'all',
+            'status' => $filter_status,
+            'gender' => $filter_gender,
             'search' => !empty($search_term) ? $search_term : '',
             'sort' => $sort_field,
             'order' => $sort_order,
@@ -136,13 +136,13 @@ function ulp_render_admin_page(): void
             <div class="ulp-sort-buttons">
                 <span><?php esc_html_e('Sort by:', 'user-list-plugin'); ?></span>
                 <a href="<?php echo esc_url(add_query_arg($data['sort_params']['name'], $data['base_url'])); ?>" class="ulp-sort-button">
-                    Name <?php echo $data['sort_field'] === 'name' ? ($data['sort_order'] === 'asc' ? '↑' : '↓') : '↕'; ?>
+                    <?php esc_html_e('Name', 'user-list-plugin'); ?> <?php echo $data['sort_field'] === 'name' ? ($data['sort_order'] === 'asc' ? '↑' : '↓') : '↕'; ?>
                 </a>
                 <a href="<?php echo esc_url(add_query_arg($data['sort_params']['email'], $data['base_url'])); ?>" class="ulp-sort-button">
-                    Email <?php echo $data['sort_field'] === 'email' ? ($data['sort_order'] === 'asc' ? '↑' : '↓') : '↕'; ?>
+                    <?php esc_html_e('Email', 'user-list-plugin'); ?> <?php echo $data['sort_field'] === 'email' ? ($data['sort_order'] === 'asc' ? '↑' : '↓') : '↕'; ?>
                 </a>
                 <a href="<?php echo esc_url(add_query_arg($data['sort_params']['id'], $data['base_url'])); ?>" class="ulp-sort-button">
-                    ID <?php echo $data['sort_field'] === 'id' ? ($data['sort_order'] === 'asc' ? '↑' : '↓') : '↕'; ?>
+                    <?php esc_html_e('ID', 'user-list-plugin'); ?> <?php echo $data['sort_field'] === 'id' ? ($data['sort_order'] === 'asc' ? '↑' : '↓') : '↕'; ?>
                 </a>
             </div>
         </div>
