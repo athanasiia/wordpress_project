@@ -14,9 +14,6 @@ require_once __DIR__ . '/../core/activation.php';
 require_once __DIR__ . '/../core/deactivation.php';
 require_once __DIR__ . '/../core/filters.php';
 
-// FIX: __FILE__ here resolves to includes/hooks/main-plugin-hooks.php, not the plugin root.
-// WordPress requires the main plugin file for activation/deactivation hooks to fire correctly.
-// ULP_PLUGIN_FILE is defined in user-list-plugin.php and points to the plugin root.
 register_activation_hook(ULP_PLUGIN_FILE, __NAMESPACE__ . '\\ulp_activate_plugin');
 add_action('plugins_loaded', __NAMESPACE__ . '\\ulp_check_db_version');
 register_deactivation_hook(ULP_PLUGIN_FILE, __NAMESPACE__ . '\\ulp_deactivate_plugin');
