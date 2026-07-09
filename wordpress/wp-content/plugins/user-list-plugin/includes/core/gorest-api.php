@@ -32,7 +32,7 @@ function ulp_gorest_request(string $method, string $endpoint = '', ?array $data 
         'timeout' => 10,
     ];
 
-    if ($data !== null && in_array($method, ['POST', 'PUT', 'PATCH'])) {
+    if ($data !== null && in_array($method, ['POST', 'PUT', 'PATCH'], true)) {
         $args['body'] = json_encode($data);
     }
 
@@ -65,17 +65,21 @@ function ulp_get_gorest_users(array $filters): array
     $sorted_users = ulp_apply_user_sorting($filtered_users, $filters['sort'], $filters['order']);
     $paginated_users = array_slice($sorted_users, $filters['offset'], $filters['limit']);
 
-    return array_map(function($user) {
-        $user = (array)$user;
+    $total_pages = ceil(count($sorted_users) / $filters['limit']);
 
-        return [
-            'id' => (int)$user['id'],
-            'email' => (string)$user['email'],
-            'name' => (string)$user['name'],
-            'gender' => (string)$user['gender'],
-            'status' => (string)$user['status']
-        ];
-    }, $paginated_users);
+    return [
+        'users' => array_map(function($user) {
+            $user = (array)$user;
+            return [
+                'id' => (int)$user['id'],
+                'email' => (string)$user['email'],
+                'name' => (string)$user['name'],
+                'gender' => (string)$user['gender'],
+                'status' => (string)$user['status']
+            ];
+        }, $paginated_users),
+        'total_pages' => $total_pages,
+    ];
 }
 
 function ulp_get_gorest_user(int $id): array
@@ -138,7 +142,10 @@ function ulp_delete_gorest_users(array $ids): int | false | WP_Error
 
 function ulp_get_cached_gorest_users(): array
 {
-    $cache_key = 'ulp_gorest_all_users';
+    $token = ulp_get_decrypted_token();
+    $token_hash = !empty($token) ? md5($token) : 'no_token';
+    $cache_key = 'ulp_gorest_users_' . $token_hash;
+
     $cached = get_transient($cache_key);
 
     if ($cached !== false) {
@@ -200,6 +207,11 @@ function ulp_apply_user_sorting(array $users, string $sort, string $order): arra
 {
     if (empty($users)) {
         return $users;
+    }
+
+    $allowed_fields = ['id', 'name', 'email'];
+    if (!in_array($sort, $allowed_fields, true)) {
+        $sort = 'id';
     }
 
     $column = array_column($users, $sort);

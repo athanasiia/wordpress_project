@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 function ulp_activate_plugin(): void
 {
     ulp_create_table();
-    update_option('ulp_db_version', ULP_DB_VERSION);
+    update_option('ulp_db_version', ULP_DB_VERSION, false);
     ulp_activate_cron();
 }
 
@@ -23,6 +23,6 @@ function ulp_check_db_version(): void
 
     if (version_compare($current_version, ULP_DB_VERSION, '<')) {
         ulp_create_table();
-        update_option('ulp_db_version', ULP_DB_VERSION);
+        update_option('ulp_db_version', ULP_DB_VERSION, false);
     }
 }

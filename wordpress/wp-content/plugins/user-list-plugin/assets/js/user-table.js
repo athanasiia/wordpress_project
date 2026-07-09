@@ -17,10 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.ulp-filter-select').forEach(select => {
         if(select.closest('.ulp-filter-group')) {
             select.addEventListener('change', function() {
-                const filterType = this.closest('.ulp-filter-group').querySelector('label').innerText.toLowerCase();
-                if(filterType === 'status:') {
+                const filterGroup = this.closest('.ulp-filter-group');
+                const filterType = filterGroup.dataset.filterType;
+
+                if(filterType === 'status') {
                     document.getElementById('status_input').value = this.value;
-                } else if(filterType === 'gender:') {
+                } else if(filterType === 'gender') {
                     document.getElementById('gender_input').value = this.value;
                 }
                 document.getElementById('filterForm').submit();
@@ -95,16 +97,16 @@ document.addEventListener('DOMContentLoaded', function() {
         deleteBtn.addEventListener('click', function() {
             if (selectedIds.size === 0) return;
 
-            const message = `Are you sure you want to delete ${selectedIds.size} ${selectedIds.size === 1 ? 'user' : 'users'}?`;
+            const message = ulp_i18n.confirmMessage.replace('%d', selectedIds.size);
             const modalHtml = `
                 <div class="ulp-modal-overlay" id="confirmModal">
                     <div class="ulp-modal">
                         <div class="ulp-modal-content">
-                            <h3>Confirm Selection</h3>
+                            <h3>${ulp_i18n.confirmTitle}</h3>
                             <p class="ulp-modal-message">${message}</p>
                             <div class="ulp-modal-actions">
-                                <button class="ulp-modal-button" id="modalCancelBtn">Cancel</button>
-                                <button class="ulp-modal-button" id="modalConfirmBtn">Delete</button>
+                                <button class="ulp-modal-button" id="modalCancelBtn">${ulp_i18n.cancelBtn}</button>
+                                <button class="ulp-modal-button" id="modalConfirmBtn">${ulp_i18n.deleteBtn}</button>
                             </div>
                         </div>
                     </div>

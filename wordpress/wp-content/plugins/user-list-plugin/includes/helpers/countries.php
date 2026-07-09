@@ -271,8 +271,8 @@ function ulp_get_countries_list(): array
 function ulp_render_countries_select(string $selected = ''): string
 {
     $countries = ulp_get_countries_list();
-    $html = '<select name="country" required>';
-    $html .= '<option value="">Select country</option>';
+    $html = '<select name="country" id="ulp_country" required>';
+    $html .= '<option value="">' . esc_html__('Select country', 'user-list-plugin') . '</option>';
 
     foreach ($countries as $code => $country) {
         $selected_attr = ($selected === $code) ? ' selected="selected"' : '';

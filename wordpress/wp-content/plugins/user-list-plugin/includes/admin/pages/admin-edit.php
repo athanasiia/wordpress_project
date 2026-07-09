@@ -12,7 +12,9 @@ if (!defined('ABSPATH')) {
 
 function ulp_add_edit_submenu(): void
 {
-    add_submenu_page(
+    global $ulp_page_hooks;
+
+    $ulp_page_hooks['edit_page'] = add_submenu_page(
         null,
         __('Edit User', 'user-list-plugin'),
         __('Edit User', 'user-list-plugin'),
@@ -25,15 +27,15 @@ function ulp_add_edit_submenu(): void
 function ulp_get_edit_page_data(): array
 {
     $source = get_option('ulp_data_source', 'local');
-    $id = (int)$_GET['id'];
+    $id = (int)wp_unslash($_GET['id']) ?? 0;
 
-    $data = array(
+    $data = [
             'source' => $source,
             'id' => $id,
             'error' => '',
             'user' => null,
             'result' => null
-    );
+    ];
 
     if (empty($id)) {
         $data['error'] = __('No user ID provided', 'user-list-plugin');

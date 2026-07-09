@@ -12,7 +12,9 @@ if (!defined('ABSPATH')) {
 
 function ulp_add_create_submenu(): void
 {
-    add_submenu_page(
+    global $ulp_page_hooks;
+
+    $ulp_page_hooks['create_page'] = add_submenu_page(
         'ulp-users',
         __('Create User', 'user-list-plugin'),
         __('Create User', 'user-list-plugin'),

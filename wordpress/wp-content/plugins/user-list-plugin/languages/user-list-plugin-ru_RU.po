@@ -1,0 +1,386 @@
+# Copyright (C) 2026 athanasiia
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: User List Plugin 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/user-list-plugin\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-07-09T06:37:06+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: user-list-plugin\n"
+
+#. Plugin Name of the plugin
+#: user-list-plugin.php
+#: includes/admin/pages/settings-page.php:19
+msgid "User List Plugin"
+msgstr "Плагин \"Список Пользователей\""
+
+#. Description of the plugin
+#: user-list-plugin.php
+msgid "Plugin to manage users"
+msgstr "Плагин для управления пользователями"
+
+#. Author of the plugin
+#: user-list-plugin.php
+msgid "athanasiia"
+msgstr "athanasiia"
+
+#: includes/admin/pages/admin-create.php:19
+#: includes/admin/pages/admin-create.php:20
+#: includes/admin/pages/admin-create.php:37
+msgid "Create User"
+msgstr "Создать Пользователя"
+
+#: includes/admin/pages/admin-create.php:38
+#: includes/admin/pages/admin-edit.php:74
+msgid "Submit"
+msgstr "Подтвердить"
+
+#: includes/admin/pages/admin-edit.php:19
+#: includes/admin/pages/admin-edit.php:20
+#: includes/admin/pages/admin-edit.php:73
+msgid "Edit User"
+msgstr "Изменить Пользователя"
+
+#: includes/admin/pages/admin-edit.php:41
+msgid "No user ID provided"
+msgstr "Не предоставлен ID пользователя"
+
+#: includes/admin/pages/admin-edit.php:55
+msgid "Could not get user"
+msgstr "Не удалось найти пользователя"
+
+#: includes/admin/pages/admin-page.php:18
+msgid "Manage Users"
+msgstr "Управление Пользователями"
+
+#: includes/admin/pages/admin-page.php:19
+msgid "User List"
+msgstr "Список Пользователей"
+
+#: includes/admin/pages/settings-page.php:18
+#: includes/admin/pages/settings-page.php:69
+msgid "User List Plugin Settings"
+msgstr "Настройки Плагина \"Список Пользователей\""
+
+#: includes/admin/pages/settings-page.php:29
+#: includes/core/user-handler.php:16
+#: includes/core/user-handler.php:81
+#: includes/core/user-handler.php:143
+msgid "You do not have sufficient permissions to perform this action"
+msgstr "У Вас недостаточно прав для этого действия"
+
+#: includes/admin/pages/settings-page.php:44
+msgid "Incorrect number of days"
+msgstr "Некорректное число дней"
+
+#: includes/admin/pages/settings-page.php:54
+msgid "Could not update token"
+msgstr "Не удалось обновить токен"
+
+#: includes/admin/pages/settings-page.php:58
+msgid "Saved"
+msgstr "Сохранено"
+
+#: includes/admin/pages/settings-page.php:74
+msgid "Data Source:"
+msgstr "Источник данных:"
+
+#: includes/admin/pages/settings-page.php:77
+msgid "Local Database"
+msgstr "Локальная база данных"
+
+#: includes/admin/pages/settings-page.php:78
+msgid "REST API GoREST"
+msgstr "REST API GoREST"
+
+#: includes/admin/pages/settings-page.php:83
+msgid "GoREST Token:"
+msgstr "GoREST Токен:"
+
+#: includes/admin/pages/settings-page.php:85
+msgid "Enter your GoREST API token"
+msgstr "Введите Ваш GoREST API токен"
+
+#: includes/admin/pages/settings-page.php:87
+msgid "Token is currently set. Enter new token to replace it."
+msgstr "В данный момент токен установлен. Введите новый токен, чтобы заменить его."
+
+#: includes/admin/pages/settings-page.php:92
+msgid "Days since last user update:"
+msgstr "Дней с последнего обновления:"
+
+#: includes/admin/pages/settings-page.php:101
+msgid "Save settings"
+msgstr "Сохранить настройки"
+
+#: includes/admin/partials/action-panel.php:19
+msgid "Create New User"
+msgstr "Создать Пользователя"
+
+#: includes/admin/partials/action-panel.php:24
+msgid "Delete Selected"
+msgstr "Удалить Пользователей"
+
+#: includes/admin/partials/action-panel.php:28
+msgid "Check all"
+msgstr "Выбрать всех"
+
+#: includes/admin/partials/inactive-users-list.php:19
+#, php-format
+msgid "Users with the following IDs haven't been updated for the past %d days:"
+msgstr "Данные пользователей с следующими ID не обновлялись последние %d дней:"
+
+#: includes/admin/partials/modals.php:21
+msgid "Success!"
+msgstr "Успех!"
+
+#: includes/admin/partials/modals.php:21
+msgid "Error"
+msgstr "Ошибка"
+
+#: includes/admin/partials/modals.php:24
+msgid "Close"
+msgstr "Закрыть"
+
+#: includes/admin/partials/user-form.php:32
+#: includes/admin/partials/user-form.php:100
+#: includes/partials/sort-buttons.php:28
+#: includes/partials/user-table.php:29
+msgid "Email"
+msgstr "Email"
+
+#: includes/admin/partials/user-form.php:38
+msgid "example@mail.com"
+msgstr "example@mail.com"
+
+#: includes/admin/partials/user-form.php:44
+msgid "Your first and last name"
+msgstr "Ваше имя и фамилия"
+
+#: includes/admin/partials/user-form.php:50
+msgid "John Doe"
+msgstr "Иван Иванов"
+
+#: includes/admin/partials/user-form.php:57
+msgid "Country of residence"
+msgstr "Страна проживания"
+
+#: includes/helpers/countries.php:275
+msgid "Select country"
+msgstr "Выберите страну"
+
+#: includes/admin/partials/user-form.php:62
+#: includes/admin/partials/user-form.php:102
+#: includes/partials/user-table.php:32
+msgid "City"
+msgstr "Город"
+
+#: includes/admin/partials/user-form.php:68
+msgid "New York"
+msgstr "Нью-Йорк"
+
+#: includes/admin/partials/user-form.php:75
+#: includes/admin/partials/user-form.php:103
+#: includes/partials/user-table.php:35
+msgid "Gender"
+msgstr "Пол"
+
+#: includes/admin/partials/user-form.php:77
+msgid "Select gender"
+msgstr "Выберите пол"
+
+#: includes/admin/partials/user-form.php:78
+#: includes/partials/filter-controls.php:30
+msgid "Male"
+msgstr "Мужчина"
+
+#: includes/admin/partials/user-form.php:79
+#: includes/partials/filter-controls.php:31
+msgid "Female"
+msgstr "Женщина"
+
+#: includes/admin/partials/user-form.php:84
+#: includes/admin/partials/user-form.php:104
+#: includes/partials/user-table.php:36
+msgid "Status"
+msgstr "Статус"
+
+#: includes/admin/partials/user-form.php:86
+msgid "Select status"
+msgstr "Выберите статус"
+
+#: includes/admin/partials/user-form.php:87
+msgid "Active user"
+msgstr "Активный пользователь"
+
+#: includes/admin/partials/user-form.php:88
+msgid "Inactive user"
+msgstr "Неактивный пользователь"
+
+#: includes/admin/partials/user-form.php:99
+#: includes/partials/sort-buttons.php:25
+#: includes/partials/user-table.php:30
+msgid "Name"
+msgstr "Имя"
+
+#: includes/admin/partials/user-form.php:101
+#: includes/partials/user-table.php:33
+msgid "Country"
+msgstr "Страна"
+
+#: includes/admin/partials/user-form.php:118
+#, php-format
+msgid "Please fill in the %s field"
+msgstr "Пожалуйста, заполните поле %s"
+
+#: includes/admin/partials/user-form.php:127
+msgid "Please enter a valid email address"
+msgstr "Пожалуйста, введите корректный email"
+
+#: includes/admin/partials/user-form.php:131
+msgid "Gender must be either \"male\" or \"female\""
+msgstr "Пол должен быть \"мужчина\" или \"женщина\""
+
+#: includes/admin/partials/user-form.php:135
+msgid "Status must be either \"active\" or \"inactive\""
+msgstr "Статус должен быть \"активный\" или \"неактивный\""
+
+#: includes/core/gorest-api.php:49
+msgid "Unknown API error"
+msgstr "Неизвестная API ошибка"
+
+#: includes/core/gorest-api.php:99
+#: includes/core/gorest-api.php:114
+#: includes/core/gorest-api.php:128
+msgid "Missing API token"
+msgstr "Отсутствует API токен"
+
+#: includes/core/user-handler.php:24
+#: includes/core/user-handler.php:89
+#: includes/core/user-handler.php:151
+msgid "Invalid WP Token"
+msgstr "Некорректный WP Токен"
+
+#: includes/core/user-handler.php:62
+msgid "Database user created"
+msgstr "Локальный пользователь создан"
+
+#: includes/core/user-handler.php:65
+msgid "Error creating database user"
+msgstr "Ошибка создания локального пользователя"
+
+#: includes/core/user-handler.php:71
+msgid "Error creating GoREST user"
+msgstr "Ошибка создания GoREST пользователя"
+
+#: includes/core/user-handler.php:74
+msgid "GoREST user created"
+msgstr "GoREST пользователь создан"
+
+#: includes/core/user-handler.php:125
+msgid "Error updating database user"
+msgstr "Ошибка обновления локального пользователя"
+
+#: includes/core/user-handler.php:128
+msgid "Database user updated"
+msgstr "Локальный пользователь обновлен"
+
+#: includes/core/user-handler.php:134
+msgid "Error updating GoREST user"
+msgstr "Ошибка обновления GoREST пользователя"
+
+#: includes/core/user-handler.php:137
+msgid "GoREST user updated"
+msgstr "GoREST пользователь обновлен"
+
+#: includes/core/user-handler.php:158
+msgid "No users selected"
+msgstr "Пользователи не выбраны"
+
+#: includes/core/user-handler.php:167
+#, php-format
+msgid "Deleted %d database user(s)"
+msgstr "Удалены %d локальных пользователя(ей)"
+
+#: includes/core/user-handler.php:170
+msgid "Error deleting database user(s)"
+msgstr "Ошибка удаления локальных пользователей"
+
+#: includes/core/user-handler.php:176
+msgid "Error deleting GoREST user(s)"
+msgstr "Ошибка удаления GoREST пользователей"
+
+#: includes/core/user-handler.php:179
+#, php-format
+msgid "Deleted %d GoREST user(s)"
+msgstr "Удалено %d GoREST пользователя(ей)"
+
+#: includes/hooks/admin-hooks.php:36
+msgid "Confirm Selection"
+msgstr "Подтвердите выбор"
+
+#: includes/hooks/admin-hooks.php:37
+msgid "Cancel"
+msgstr "Отмена"
+
+#: includes/hooks/admin-hooks.php:38
+#: includes/partials/user-table.php:26
+msgid "Delete"
+msgstr "Удалить"
+
+#: includes/hooks/admin-hooks.php:39
+#, php-format
+msgid "Are you sure you want to delete %d user(s)?"
+msgstr "Вы уверены, что хотите удалить %d пользователя(ей)"
+
+#: includes/partials/filter-controls.php:18
+msgid "Status:"
+msgstr "Статус:"
+
+#: includes/partials/filter-controls.php:20
+#: includes/partials/filter-controls.php:29
+msgid "All"
+msgstr "Все"
+
+#: includes/partials/filter-controls.php:21
+msgid "Active"
+msgstr "Активный"
+
+#: includes/partials/filter-controls.php:22
+msgid "Inactive"
+msgstr "Неактивный"
+
+#: includes/partials/filter-controls.php:27
+msgid "Gender:"
+msgstr "Пол:"
+
+#: includes/partials/search-form.php:22
+msgid "Search by name..."
+msgstr "Найти по имени..."
+
+#: includes/partials/sort-buttons.php:23
+msgid "Sort by:"
+msgstr "Сортировать по:"
+
+#: includes/partials/sort-buttons.php:31
+#: includes/partials/user-table.php:28
+msgid "ID"
+msgstr "ID"
+
+#: includes/partials/user-table.php:38
+msgid "Created"
+msgstr "Создан"
+
+#: includes/partials/user-table.php:39
+msgid "Updated"
+msgstr "Обновлен"
+
+#: includes/partials/user-table.php:49
+msgid "Edit"
+msgstr "Изменить"

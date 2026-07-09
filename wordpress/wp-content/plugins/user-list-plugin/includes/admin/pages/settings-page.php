@@ -12,7 +12,9 @@ if (!defined('ABSPATH')) {
 
 function ulp_add_settings_page(): void
 {
-    add_options_page(
+    global $ulp_page_hooks;
+
+    $ulp_page_hooks['settings_page'] = add_options_page(
         __('User List Plugin Settings', 'user-list-plugin'),
         __('User List Plugin', 'user-list-plugin'),
         'manage_options',
@@ -23,26 +25,30 @@ function ulp_add_settings_page(): void
 
 function ulp_process_settings(): void
 {
+    if (!current_user_can('manage_options')) {
+        wp_die(__('You do not have sufficient permissions to perform this action', 'user-list-plugin' ));
+    }
+
     if (!isset($_POST['ulp_save_settings']) || !check_admin_referer('ulp_settings_nonce')) {
         return;
     }
 
-    $source = sanitize_text_field($_POST['ulp_data_source']);
+    $source = sanitize_text_field(wp_unslash($_POST['ulp_data_source'] ?? ''));
     if (!in_array($source, ['local', 'gorest'], true)) {
         $source = 'local';
     }
 
-    $token = sanitize_text_field($_POST['ulp_gorest_token']);
+    $token = sanitize_text_field(wp_unslash($_POST['ulp_gorest_token'] ?? ''));
 
-    if (!is_numeric($_POST['ulp_update_interval']) || (int)$_POST['ulp_update_interval'] <= 0) {
+    if (!is_numeric(wp_unslash($_POST['ulp_update_interval'] ?? '')) || (int)wp_unslash($_POST['ulp_update_interval'] ?? '') <= 0) {
         echo '<div class="notice notice-error">' . esc_html__('Incorrect number of days', 'user-list-plugin') . '</div>';
         return;
     }
 
-    $days = absint($_POST['ulp_update_interval']);
+    $days = absint(wp_unslash($_POST['ulp_update_interval']));
 
-    update_option('ulp_data_source', $source);
-    update_option('ulp_update_interval', $days);
+    update_option('ulp_data_source', $source, false);
+    update_option('ulp_update_interval', $days, false);
 
     if (!empty($token) && !ulp_encrypt_and_save_token($token)) {
         echo '<div class="notice notice-error">' . esc_html__('Could not update token', 'user-list-plugin') . '</div>';
@@ -65,27 +71,27 @@ function ulp_render_settings_page(): void
             <?php wp_nonce_field('ulp_settings_nonce'); ?>
             <table class="form-table">
                 <tr>
-                    <th scope="row"><?php esc_html_e('Data Source:', 'user-list-plugin'); ?></th>
+                    <th scope="row"><label for="ulp_data_source"><?php esc_html_e('Data Source:', 'user-list-plugin'); ?></label></th>
                     <td>
-                        <select name="ulp_data_source">
+                        <select name="ulp_data_source" id="ulp_data_source">
                             <option value="local" <?php selected($current_source, 'local'); ?>><?php esc_html_e('Local Database', 'user-list-plugin'); ?></option>
                             <option value="gorest" <?php selected($current_source, 'gorest'); ?>><?php esc_html_e('REST API GoREST', 'user-list-plugin'); ?></option>
                         </select>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php esc_html_e('GoREST Token:', 'user-list-plugin'); ?></th>
+                    <th scope="row"><label for="ulp_gorest_token"><?php esc_html_e('GoREST Token:', 'user-list-plugin'); ?></label></th>
                     <td>
-                        <input type="password" name="ulp_gorest_token" class="regular-text" value="" placeholder="<?php esc_attr_e('Enter your GoREST API token', 'user-list-plugin'); ?>"/>
+                        <input type="password" name="ulp_gorest_token" id="ulp_gorest_token" class="regular-text" value="" placeholder="<?php esc_attr_e('Enter your GoREST API token', 'user-list-plugin'); ?>"/>
                         <?php if (ulp_get_decrypted_token()): ?>
                             <p class="description"><?php esc_html_e('Token is currently set. Enter new token to replace it.', 'user-list-plugin'); ?></p>
                         <?php endif; ?>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php esc_html_e('Days since last user update:', 'user-list-plugin'); ?></th>
+                    <th scope="row"><label for="ulp_update_interval"><?php esc_html_e('Days since last user update:', 'user-list-plugin'); ?></label></th>
                     <td>
-                        <input type="text" name="ulp_update_interval" class="regular-text" value="<?php echo esc_attr(get_option('ulp_update_interval')); ?>"/>
+                        <input type="number" min="1" name="ulp_update_interval" id="ulp_update_interval" class="regular-text" value="<?php echo esc_attr(get_option('ulp_update_interval')); ?>"/>
                     </td>
                 </tr>
             </table>

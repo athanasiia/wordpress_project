@@ -33,7 +33,7 @@ function ulp_encrypt_and_save_token(string $token): bool
 
     $combined = base64_encode($iv) . ':' . base64_encode($encrypted);
 
-    return update_option('ulp_gorest_token_encrypted', $combined);
+    return update_option('ulp_gorest_token_encrypted', $combined, false);
 }
 
 function ulp_get_decrypted_token(): string

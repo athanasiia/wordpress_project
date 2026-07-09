@@ -12,6 +12,10 @@ if (!defined('ABSPATH')) {
 
 function ulp_handle_create(): array
 {
+    if (!current_user_can('manage_options')) {
+        wp_die(__('You do not have sufficient permissions to perform this action', 'user-list-plugin' ));
+    }
+
     if(!isset($_POST['ulp_create_submit'])) {
         return [];
     }
@@ -22,16 +26,16 @@ function ulp_handle_create(): array
 
     $source = get_option('ulp_data_source', 'local');
 
-    $name = sanitize_text_field($_POST['name']);
-    $email = sanitize_email($_POST['email']);
-    $gender = sanitize_text_field($_POST['gender']);
-    $status = sanitize_text_field($_POST['status']);
+    $name = sanitize_text_field(wp_unslash($_POST['name'] ?? ''));
+    $email = sanitize_email(wp_unslash($_POST['email'] ?? ''));
+    $gender = sanitize_text_field(wp_unslash($_POST['gender'] ?? ''));
+    $status = sanitize_text_field(wp_unslash($_POST['status'] ?? ''));
 
     $user = [];
 
     if ($source === 'local') {
-        $country = sanitize_text_field($_POST['country']);
-        $city = sanitize_text_field($_POST['city']);
+        $country = sanitize_text_field(wp_unslash($_POST['country'] ?? ''));
+        $city = sanitize_text_field(wp_unslash($_POST['city'] ?? ''));
 
         $user['country'] = $country;
         $user['city'] = $city;
@@ -73,6 +77,10 @@ function ulp_handle_create(): array
 
 function ulp_handle_edit(int $id): array
 {
+    if (!current_user_can('manage_options')) {
+        wp_die(__('You do not have sufficient permissions to perform this action', 'user-list-plugin' ));
+    }
+
     if(!isset($_POST['ulp_edit_submit'])) {
         return [];
     }
@@ -83,15 +91,15 @@ function ulp_handle_edit(int $id): array
 
     $source = get_option('ulp_data_source', 'local');
 
-    $name = sanitize_text_field($_POST['name']);
-    $email = sanitize_email($_POST['email']);
-    $gender = sanitize_text_field($_POST['gender']);
-    $status = sanitize_text_field($_POST['status']);
+    $name = sanitize_text_field(wp_unslash($_POST['name'] ?? ''));
+    $email = sanitize_email(wp_unslash($_POST['email'] ?? ''));
+    $gender = sanitize_text_field(wp_unslash($_POST['gender'] ?? ''));
+    $status = sanitize_text_field(wp_unslash($_POST['status'] ?? ''));
 
     $user = [];
     if ($source === 'local') {
-        $country = sanitize_text_field($_POST['country']);
-        $city = sanitize_text_field($_POST['city']);
+        $country = sanitize_text_field(wp_unslash($_POST['country'] ?? ''));
+        $city = sanitize_text_field(wp_unslash($_POST['city'] ?? ''));
 
         $user['country'] = $country;
         $user['city'] = $city;
@@ -113,11 +121,11 @@ function ulp_handle_edit(int $id): array
     if ($source === 'local') {
         $result = ulp_update_local_user($id, $user);
 
-        if ($result) {
-            return ['success' => true, 'message' => __('Database user updated', 'user-list-plugin')];
+        if ($result === false) {
+            return ['success' => false, 'error' => __('Error updating database user', 'user-list-plugin')];
         }
 
-        return ['success' => false, 'error' => __('Error updating database user', 'user-list-plugin')];
+        return ['success' => true, 'message' => __('Database user updated', 'user-list-plugin')];
     }
 
     $result = ulp_update_gorest_user($id, $user);
@@ -131,6 +139,10 @@ function ulp_handle_edit(int $id): array
 
 function ulp_handle_delete(): array
 {
+    if (!current_user_can('manage_options')) {
+        wp_die(__('You do not have sufficient permissions to perform this action', 'user-list-plugin' ));
+    }
+
     if (!isset($_POST['ulp_delete_submit'])) {
         return [];
     }
@@ -139,7 +151,7 @@ function ulp_handle_delete(): array
         return ['success' => false, 'error' => __('Invalid WP Token', 'user-list-plugin')];
     }
 
-    $ids_json = sanitize_text_field($_POST['delete_ids']);
+    $ids_json = sanitize_text_field(wp_unslash($_POST['delete_ids'] ?? ''));
     $ids = json_decode($ids_json, true);
 
     if (empty($ids) || !is_array($ids)) {

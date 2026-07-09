@@ -27,8 +27,8 @@ function ulp_deactivate_cron(): void
 
 function ulp_check_inactive_users(): void
 {
-    $source = get_option('ulp_data_source');
-    $filters = array(
+    $source = get_option('ulp_data_source', 'local');
+    $filters = [
         'status' => 'all',
         'gender' => 'all',
         'search' => '',
@@ -36,7 +36,7 @@ function ulp_check_inactive_users(): void
         'order' => 'asc',
         'limit' => 100,
         'offset' => 0
-    );
+    ];
 
     if ($source !== 'local') {
         return;
@@ -44,8 +44,8 @@ function ulp_check_inactive_users(): void
 
     $users = ulp_get_local_users($filters);
 
-    $update_interval = get_option('ulp_update_interval');
-    $no_updates_users = array();
+    $update_interval = get_option('ulp_update_interval', 5);
+    $no_updates_users = [];
     $current_date = date_create(wp_date("Y-m-d"));
 
     foreach ($users as $user) {
