@@ -65,7 +65,7 @@ function ulp_get_gorest_users(array $filters): array
     $sorted_users = ulp_apply_user_sorting($filtered_users, $filters['sort'], $filters['order']);
     $paginated_users = array_slice($sorted_users, $filters['offset'], $filters['limit']);
 
-    $total_pages = ceil(count($sorted_users) / $filters['limit']);
+    $total_pages = ceil(count($sorted_users) / (empty($filters['limit']) ? 5 : $filters['limit']));
 
     return [
         'users' => array_map(function($user) {

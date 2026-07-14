@@ -20,7 +20,9 @@ function ulp_render_inactive_users_block(array $inactive_users): string
         <p>
             <?php
             foreach($inactive_users as $user)
-            echo esc_html($user) . ' ';
+            {
+                echo esc_html($user) . ' ';
+            }
             ?>
         </p>
     </div>

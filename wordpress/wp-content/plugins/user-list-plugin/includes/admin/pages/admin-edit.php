@@ -27,7 +27,7 @@ function ulp_add_edit_submenu(): void
 function ulp_get_edit_page_data(): array
 {
     $source = get_option('ulp_data_source', 'local');
-    $id = (int)wp_unslash($_GET['id']) ?? 0;
+    $id = (int)wp_unslash($_GET['id'] ?? 0);
 
     $data = [
             'source' => $source,

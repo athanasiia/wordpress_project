@@ -77,7 +77,7 @@ function ulp_get_local_users(array $filters): array
     $offset = isset($filters['offset']) ? (int)$filters['offset'] : 0;
 
     $sql = "SELECT * FROM $table_name $where_sql ORDER BY $sort_field $sort_order LIMIT %d OFFSET %d";
-    $params[] = $limit;
+    $params[] = empty($limit) ? 5 : $limit;
     $params[] = $offset;
 
     if (!empty($params)) {

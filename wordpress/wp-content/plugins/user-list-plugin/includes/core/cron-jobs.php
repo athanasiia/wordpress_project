@@ -42,7 +42,8 @@ function ulp_check_inactive_users(): void
         return;
     }
 
-    $users = ulp_get_local_users($filters);
+    $user_data = ulp_get_local_users($filters);
+    $users = $user_data['users'];
 
     $update_interval = get_option('ulp_update_interval', 5);
     $no_updates_users = [];
