@@ -39,7 +39,7 @@ Switch the active source under **Settings → User List Plugin**.
 - **Filters**: status (all / active / inactive), gender (all / male / female)
 - **Search**: by name (partial match)
 - **Sort**: by ID, name, or email (ascending/descending)
-- **Status display**: `ulp_add_icons` filter appends Unicode symbols (◎ active, ◎ inactive styling)
+- **Status display**: `ulp_add_icons()` escapes the status with `esc_html()` and appends HTML entities for icons (`&#10687;` active, `&#10686;` inactive)
 
 ### Frontend display
 
@@ -56,10 +56,10 @@ Switch the active source under **Settings → User List Plugin**.
 
 ### Security
 
-- GoREST API token stored encrypted with AES-256-CBC using WordPress `LOGGED_IN_KEY` as key and first 16 bytes as IV
+- GoREST API token stored encrypted with AES-256-CBC using WordPress `LOGGED_IN_KEY` as the encryption key; a random 16-byte IV from `openssl_random_pseudo_bytes()` is stored alongside the ciphertext as `base64(iv):base64(ciphertext)` in `ulp_gorest_token_encrypted`
 - Admin forms protected with WordPress nonces (`ulp_create_nonce`, `ulp_edit_nonce`, `ulp_delete_nonce`, `ulp_settings_nonce`)
 - Input sanitization: `sanitize_text_field`, `sanitize_email`, etc.
-- Output escaped in templates (`esc_html`, `esc_attr`, `esc_url`, `wp_kses_post` for status icons)
+- Output escaped in templates (`esc_html`, `esc_attr`, `esc_url`)
 
 ---
 
@@ -123,7 +123,7 @@ Indexes: `gender`, `status`.
 - Base URL: `https://gorest.in/public/v2/users`
 - Methods: GET (list with `?per_page=100`, single user), POST, PUT, DELETE
 - Authorization: `Bearer {token}` when token is configured
-- List endpoint results are cached in transient `ulp_gorest_all_users` for 5 minutes
+- List endpoint results are cached in transient `ulp_gorest_users_{md5(token)}` (or `ulp_gorest_users_no_token` when no token is set) for 5 minutes
 - Client-side filtering, sorting, and pagination applied in PHP after fetch
 - Create/update/delete return `WP_Error` if token is missing or API returns non-2xx
 
@@ -140,11 +140,18 @@ Indexes: `gender`, `status`.
 ### Frontend
 
 Add to any post or page:
+
+```
 [user_list]
+```
 
 Query parameters on the page URL control behavior (same as admin): `search`, `filter_status`, `filter_gender`, `sort_field`, `sort_order`, `user_page`.
+
 ---
+
 ## Plugin architecture
+
+### Directory layout
 
 ```text
 user-list-plugin/
@@ -173,8 +180,28 @@ user-list-plugin/
     ├── css/
     └── js/
         └── user-table.js
-        
 ```
+
+### File roles
+
+| Path | Role |
+|------|------|
+| `user-list-plugin.php` | Bootstrap, hooks, asset loading |
+| `includes/core/database.php` | Table creation and local CRUD |
+| `includes/core/gorest-api.php` | GoREST HTTP client, cache, filter/sort |
+| `includes/core/encryption.php` | Encrypt/decrypt API token |
+| `includes/core/cron-jobs.php` | Daily inactive-user check |
+| `includes/admin/pages/admin-page.php` | Main list and bulk delete |
+| `includes/admin/pages/admin-create.php` | Create user page |
+| `includes/admin/pages/admin-edit.php` | Edit user page |
+| `includes/admin/pages/settings-page.php` | Plugin settings |
+| `includes/admin/partials/user-form.php` | Shared form and validation |
+| `includes/admin/partials/modals.php` | Success/error modal |
+| `includes/admin/partials/inactive-users-list.php` | Stale-user admin notice |
+| `includes/frontend/shortcode.php` | `[user_list]` shortcode |
+| `includes/helpers/countries.php` | ISO country list and select markup |
+| `assets/css/*.css` | Admin and frontend styles |
+| `assets/js/user-table.js` | Admin table UX (filters, modals, delete) |
 
 ### Key hooks
 
@@ -185,7 +212,6 @@ user-list-plugin/
 | `plugins_loaded` → `ulp_check_db_version` | Migrate table if `ulp_db_version` is behind |
 | `admin_menu` | Register admin pages |
 | `admin_enqueue_scripts` / `wp_enqueue_scripts` | Load CSS/JS on relevant screens |
-| `ulp_add_icons` filter | Decorate status text in admin table |
 | `ulp_check_inactive_users` (cron) | Rebuild inactive user ID list |
 
 ### Validation rules (`ulp_user_form_validation`)
@@ -212,15 +238,14 @@ Frontend shortcode loads table styles and the same script where applicable (filt
 ---
 
 ## Limitations and notes
-- Pagination assumes “next page exists” when the current page returns exactly limit rows (no total count).
-- GoREST list is capped at 100 users per API fetch (per_page=100).
-- Inactive-user cron only runs when ulp_data_source is local.
-- Frontend shortcode does not expose admin actions (by design).
-- Plugin header lists minimal Requires at least / Requires PHP; ensure your environment meets WordPress and OpenSSL needs for production.
 
+- GoREST list is capped at 100 users per API fetch (`per_page=100`).
+- Inactive-user cron only runs when `ulp_data_source` is `local`.
+- Frontend shortcode does not expose admin actions.
+- Plugin header lists minimal `Requires at least` / `Requires PHP`; ensure your environment meets WordPress and OpenSSL needs for production.
 
 ---
 
-### Summary
+## Summary
 
 The plugin is a **dual-backend user directory**: WordPress custom table **or** GoREST API, with full admin CRUD, settings for source/token/stale threshold, daily cron for “not updated in N days” (local only), and a **`[user_list]`** shortcode for public browsing.
